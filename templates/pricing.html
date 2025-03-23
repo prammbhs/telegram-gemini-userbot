@@ -1,0 +1,331 @@
+{% extends "base.html" %}
+
+{% block title %}Pricing - Telegram Gemini Bot{% endblock %}
+
+{% block head %}
+<!-- Page SEO -->
+<meta name="description" content="Affordable plans for Telegram Gemini Bot - Create AI-powered bots for your Telegram account. Choose from free, pro, and enterprise plans.">
+<meta name="keywords" content="telegram bot pricing, ai bot plans, telegram gemini pricing, ai chatbot subscription">
+<!-- Open Graph / Social Media -->
+<meta property="og:title" content="Pricing - Telegram Gemini Bot">
+<meta property="og:description" content="Affordable plans for Telegram Gemini Bot - Choose from free, pro, and enterprise plans.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.url }}">
+<!-- Structured Data (Schema.org) -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "Telegram Gemini Bot",
+  "description": "Create AI-powered bots for your Telegram account",
+  "url": "{{ request.url_root }}",
+  "offers": {
+    "@type": "AggregateOffer",
+    "priceCurrency": "USD",
+    "lowPrice": "0",
+    "highPrice": "49.99",
+    "offerCount": "3"
+  }
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-8 text-center">
+            <h1 class="display-4 fw-bold mb-3">Simple, Transparent Pricing</h1>
+            <p class="lead mb-4">Choose the plan that's right for you and start creating intelligent Telegram bots</p>
+            
+            <div class="d-flex justify-content-center align-items-center mb-4">
+                <span class="me-3 fw-bold">Monthly</span>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="billingToggle">
+                    <label class="form-check-label" for="billingToggle"></label>
+                </div>
+                <span class="ms-3 fw-bold">Annual <span class="badge bg-success ms-1">Save 20%</span></span>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-1 row-cols-md-3 g-4 mb-5">
+        <!-- Free Plan -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-header bg-light text-center border-0">
+                    <h3 class="my-3">Free</h3>
+                    <div class="pricing-value">
+                        <span class="display-5 fw-bold">$0</span>
+                        <span class="text-muted">/month</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>1 Active Bot</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>500 AI Responses/month</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>30-minute Max Session Duration</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Basic Analytics</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                            <span>Learning Mode</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                            <span>Bot Templates</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-x-circle-fill text-danger me-2"></i>
+                            <span>Priority Support</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center border-0 pb-4">
+                    <a href="{{ url_for('register') }}" class="btn btn-outline-primary btn-lg">Get Started</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pro Plan -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow position-relative hover-lift">
+                <!-- Popular badge -->
+                <div class="position-absolute top-0 start-50 translate-middle">
+                    <span class="badge bg-primary px-3 py-2 rounded-pill">MOST POPULAR</span>
+                </div>
+                
+                <div class="card-header text-center border-0 bg-gradient-primary text-white">
+                    <h3 class="my-3">Pro</h3>
+                    <div class="pricing-value">
+                        <span class="display-5 fw-bold">$9<span class="price-suffix">.99</span></span>
+                        <span class="text-white">/month</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span><strong>5 Active Bots</strong></span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span><strong>Unlimited</strong> AI Responses</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>3-hour Max Session Duration</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Advanced Analytics</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Learning Mode</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Bot Templates Library</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Email Support</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center border-0 pb-4">
+                    <a href="{{ url_for('register') }}?plan=pro" class="btn btn-primary btn-lg">Choose Pro</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Enterprise Plan -->
+        <div class="col">
+            <div class="card h-100 border-0 shadow-sm hover-lift">
+                <div class="card-header bg-light text-center border-0">
+                    <h3 class="my-3">Enterprise</h3>
+                    <div class="pricing-value">
+                        <span class="display-5 fw-bold">$49<span class="price-suffix">.99</span></span>
+                        <span class="text-muted">/month</span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span><strong>Unlimited</strong> Active Bots</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span><strong>Unlimited</strong> AI Responses</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>24-hour Max Session Duration</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Enterprise Analytics & Reporting</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Advanced Learning & Optimization</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>API Access</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Priority 24/7 Support</span>
+                        </li>
+                        <li class="mb-3 d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            <span>Custom Integration Options</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="card-footer bg-transparent text-center border-0 pb-4">
+                    <a href="{{ url_for('register') }}?plan=enterprise" class="btn btn-outline-primary btn-lg">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- FAQ Section -->
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8">
+            <h3 class="text-center mb-4">Frequently Asked Questions</h3>
+            
+            <div class="accordion" id="pricingFaq">
+                <div class="accordion-item border-0 mb-3 shadow-sm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                            Can I upgrade or downgrade my plan at any time?
+                        </button>
+                    </h2>
+                    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body">
+                            Yes! You can upgrade your plan at any time, and the new features will be available immediately. If you downgrade, the changes will take effect at the end of your current billing cycle.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item border-0 mb-3 shadow-sm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                            What payment methods do you accept?
+                        </button>
+                    </h2>
+                    <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body">
+                            We accept all major credit cards (Visa, Mastercard, American Express, Discover), PayPal, and in some regions, we support Google Pay and Apple Pay.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item border-0 mb-3 shadow-sm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                            Do you offer refunds?
+                        </button>
+                    </h2>
+                    <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body">
+                            Yes, we offer a 7-day money-back guarantee on all new subscriptions. If you're not satisfied with our service, contact our support team within 7 days of your purchase for a full refund.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item border-0 mb-3 shadow-sm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                            What happens if I exceed my plan limits?
+                        </button>
+                    </h2>
+                    <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body">
+                            On the Free plan, once you reach the 500 AI response limit, your bots will stop generating new responses until the next billing cycle. For session duration limits, bots will automatically stop after the maximum time is reached. You'll receive notifications when you're approaching these limits.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="accordion-item border-0 mb-3 shadow-sm">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                            Do you offer discounts for annual billing?
+                        </button>
+                    </h2>
+                    <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                        <div class="accordion-body">
+                            Yes! You save 20% when you choose annual billing. This discount is applied automatically when you switch to the annual plan.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- CTA Section -->
+    <div class="row justify-content-center mt-5 pt-3">
+        <div class="col-lg-8 text-center">
+            <div class="card bg-gradient-primary text-white border-0 shadow">
+                <div class="card-body py-5">
+                    <h3 class="mb-4">Ready to create intelligent Telegram bots?</h3>
+                    <p class="lead mb-4">Get started with our free plan today, no credit card required.</p>
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg">
+                        <i class="bi bi-rocket-takeoff me-2"></i>Start Creating Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle billing toggle
+        const billingToggle = document.getElementById('billingToggle');
+        const priceElements = document.querySelectorAll('.pricing-value .display-5');
+        
+        // Original monthly prices
+        const monthlyPrices = ['0', '9.99', '49.99'];
+        // Annual prices (20% discount)
+        const annualPrices = ['0', '7.99', '39.99'];
+        
+        billingToggle.addEventListener('change', function() {
+            const prices = this.checked ? annualPrices : monthlyPrices;
+            const period = this.checked ? '/year' : '/month';
+            
+            // Update price texts
+            priceElements.forEach((el, index) => {
+                // Handle prices with decimals
+                if (prices[index].includes('.')) {
+                    const [whole, decimal] = prices[index].split('.');
+                    el.innerHTML = `$${whole}<span class="price-suffix">.${decimal}</span>`;
+                } else {
+                    el.innerHTML = `$${prices[index]}`;
+                }
+            });
+            
+            // Update period texts
+            document.querySelectorAll('.pricing-value .text-muted, .pricing-value .text-white').forEach(el => {
+                el.textContent = period;
+            });
+        });
+    });
+</script>
+{% endblock %}

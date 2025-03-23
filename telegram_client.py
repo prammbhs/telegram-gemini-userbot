@@ -1,13 +1,14 @@
-import asyncio
-import random
+import os
+import config
 import time
-# Defer TelegramClient import until we need it
+import random
+import asyncio
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.types import Channel, User, Chat
-import config
+from telethon import TelegramClient, events
 
 class TelegramUserbot:
-    def __init__(self, super_context, target_group, duration, user_id=None):
+    def __init__(self, super_context, target_group, duration, user_id=None, parent_bot=None):
         # Get dynamic config for this user
         self.config_instance = config.DynamicConfig(user_id)
         
@@ -22,206 +23,202 @@ class TelegramUserbot:
         self.is_group_chat = None  # Will be set during connection
         self.client = None  # We'll initialize this in the start method
         
+        # Store reference to parent bot to access AI handler
+        self.parent_bot = parent_bot
+        
+        # Ensure session directory exists
+        session_path = os.path.dirname(self.config_instance.SESSION_FILE)
+        os.makedirs(session_path, exist_ok=True)
+        
+        # Check if session file exists
+        self.session_file_exists = os.path.exists(f"{self.config_instance.SESSION_FILE}.session")
+    
     async def _check_chat_type(self):
         """Determine if we're in a group chat or individual conversation"""
         try:
             entity = await self.client.get_entity(self.target_group)
-            
-            if isinstance(entity, User):
-                self.is_group_chat = False
-                print(f"Connected to individual chat with {entity.first_name}")
-                return False
-            elif isinstance(entity, (Channel, Chat)):
-                self.is_group_chat = True
-                print(f"Connected to group chat: {entity.title}")
-                return True
+            self.is_group_chat = isinstance(entity, (Channel, Chat))
+            if not self.is_group_chat:
+                print(f"Target {self.target_group} is a private conversation with {entity.first_name}")
             else:
-                # Default to group chat behavior if unknown
-                self.is_group_chat = True
-                print("Connected to unknown chat type, assuming group")
-                return True
+                print(f"Target {self.target_group} is a group chat with {entity.title}")
                 
+            return self.is_group_chat
         except Exception as e:
             print(f"Error determining chat type: {e}")
-            # Default to group chat behavior
-            self.is_group_chat = True
-            return True
+            self.is_group_chat = True  # Default to group chat if we can't determine
+            return self.is_group_chat
     
-    async def get_recent_messages(self, limit=config.MESSAGE_HISTORY_LIMIT):
+    async def get_recent_messages(self, limit=20):  # Increased from config.MESSAGE_HISTORY_LIMIT
         """Get recent messages from the group for context"""
-        entity = await self.client.get_entity(self.target_group)
-        history = await self.client(GetHistoryRequest(
-            peer=entity,
-            limit=limit,
-            offset_date=None,
-            offset_id=0,
-            max_id=0,
-            min_id=0,
-            add_offset=0,
-            hash=0
-        ))
-        messages = []
-        for message in reversed(history.messages):
-            # Only include messages from the current session if we have a session start time
-            if self.session_start_timestamp and message.date.timestamp() < self.session_start_timestamp:
-                continue
-                
-            if message.message:
-                try:
-                    if message.from_id:
-                        sender = await self.client.get_entity(message.from_id)
-                        messages.append(f"{sender.first_name}: {message.message}")
-                    else:
-                        # Handle case where from_id is None (like channel posts)
-                        messages.append(f"Unknown User: {message.message}")
-                except Exception as e:
-                    # Handle any other errors when getting sender info
-                    print(f"Error getting message sender: {e}")
-                    messages.append(f"User: {message.message}")
-        return messages
+        if not self.client:
+            return []
+            
+        try:
+            entity = await self.client.get_entity(self.target_group)
+            history = await self.client(GetHistoryRequest(
+                peer=entity,
+                limit=limit,
+                offset_date=None,
+                offset_id=0,
+                max_id=0,
+                min_id=0,
+                add_offset=0,
+                hash=0
+            ))
+            messages = []
+            for message in reversed(history.messages):
+                if message.message:
+                    try:
+                        sender = await self.client.get_entity(message.from_id) if message.from_id else None
+                        sender_name = f"{sender.first_name}" if sender else "Unknown"
+                        messages.append(f"{sender_name}: {message.message}")
+                    except Exception as e:
+                        print(f"Error getting sender: {e}")
+                        messages.append(f"User: {message.message}")
+            return messages
+        except Exception as e:
+            print(f"Error getting recent messages: {e}")
+            return []
     
     async def send_ai_response(self, context, event=None):
         """Generate and send AI response with error handling"""
         try:
-            # Skip if message is from before the session started
-            if event and self.session_start_timestamp:
-                if event.message.date.timestamp() < self.session_start_timestamp:
-                    print(f"Ignoring message from before session start: {event.message.text}")
-                    return
+            # Check if parent bot exists and has AI handler
+            if not self.parent_bot or not hasattr(self.parent_bot, 'ai_handler') or not self.parent_bot.ai_handler:
+                print("AI handler not initialized yet. Cannot generate response.")
+                return False
             
-            # Pass the message ID to reply to if we have an event
-            message_id_to_reply = event.message.id if event else None
-            responses = await self.generate_ai_response(context, self.is_group_chat, message_id_to_reply)
+            # Generate response using the parent bot's AI handler
+            message_id = event.id if event else None
+            response_data = await self.parent_bot.generate_ai_response(
+                context, 
+                is_group_chat=self.is_group_chat,
+                message_id_to_reply=message_id
+            )
             
-            if not responses:
-                return
+            # Send message(s)
+            for message in response_data['messages']:
+                # Add typing simulation
+                async with self.client.action(self.target_group, 'typing'):
+                    # Random delay to simulate human typing
+                    delay = min(0.1 * len(message), 5.0)
+                    await asyncio.sleep(delay)
                 
-            # Add initial delay to seem more human-like
-            initial_delay = random.uniform(40, 60)  # Between 40-60 seconds
-            print(f"Waiting for {initial_delay:.1f} seconds before responding...")
-            await asyncio.sleep(initial_delay)
-            
-            # Check if the response is the new dictionary format
-            # If not, convert it to be backward compatible
-            if isinstance(responses, dict):
-                messages = responses.get("messages", [])
-                should_reply = responses.get("should_reply", False)
-            else:
-                # Handle legacy format where responses was just a list
-                messages = responses
-                should_reply = False
-            
-            # Send each part of the response with a significant delay between them
-            first_message = True
-            for response in messages:
-                # Only proceed if the bot is still running
-                if not self.running:
-                    break
+                if response_data.get('should_reply') and event:
+                    await event.reply(message)
+                else:
+                    await self.client.send_message(self.target_group, message)
+                
+                # Sleep between multiple messages
+                if len(response_data['messages']) > 1:
+                    await asyncio.sleep(random.uniform(1.5, 3.0))
                     
-                # Decide if we should reply to the original message (only for the first message)
-                reply_to = event.message.id if first_message and should_reply else None
-                
-                # Use try-except for sending messages
-                try:
-                    await self.client.send_message(
-                        self.target_group, 
-                        response,
-                        reply_to=reply_to
-                    )
-                except Exception as e:
-                    print(f"Error sending message: {e}")
-                    # Don't stop if a single message fails, just log and continue
-                    continue
-                
-                first_message = False
-                
-                # Add a delay between multiple message parts
-                if len(messages) > 1 and response != messages[-1] and self.running:
-                    typing_delay = random.uniform(45, 65)  # 45-65 seconds between messages
-                    print(f"Waiting {typing_delay:.1f} seconds before next message part...")
-                    await asyncio.sleep(typing_delay)
+            return True
         except Exception as e:
-            print(f"Error in send_ai_response: {e}")
+            print(f"Error sending AI response: {e}")
+            return False
+    
+    async def _send_initial_message(self):
+        """Send an initial message to start the conversation"""
+        try:
+            # Make sure parent bot and AI handler are initialized
+            if not self.parent_bot or not self.parent_bot.ai_handler:
+                print("AI handler not initialized yet. Will skip initial message.")
+                return False
+            
+            # Get initial message
+            initial_message = await self.parent_bot.generate_initial_message()
+            
+            # Send initial message with typing simulation
+            async with self.client.action(self.target_group, 'typing'):
+                await asyncio.sleep(random.uniform(1.5, 3.0))
+                await self.client.send_message(self.target_group, initial_message)
+            
+            print(f"Sent initial message: {initial_message}")
+            return True
+        except Exception as e:
+            print(f"Error sending initial message: {e}")
+            return False
     
     async def start(self):
-        """Start the userbot"""
-        # Import TelegramClient here to avoid premature event loop access
-        from telethon import TelegramClient, events
-        
-        # Initialize the TelegramClient here instead of in __init__
-        self.client = TelegramClient(
-            self.config_instance.SESSION_FILE, 
-            self.config_instance.API_ID, 
-            self.config_instance.API_HASH
-        )
-        
-        await self.client.start()
-        print("Client Created")
-        
-        # Record the session start time
-        self.session_start_timestamp = time.time()
-        print(f"Session start timestamp: {self.session_start_timestamp}")
-        
-        # Determine if we're in a group chat
-        await self._check_chat_type()
-        
-        self.running = True
-        self.start_time = time.time()
-        
-        # Send initial message - with proper error handling
-        initial_message = await self.generate_initial_message()
-        
-        # This is where the ChatWriteForbiddenError can occur
+        """Initialize and start the Telegram client"""
         try:
-            await self.client.send_message(self.target_group, initial_message)
-        except Exception as e:
-            self.running = False
-            # Re-raise the exception to be handled by the calling function
-            raise e
-        
-        # Set up message handler
-        @self.client.on(events.NewMessage(chats=self.target_group))
-        async def message_handler(event):
-            if not self.running:
-                return
-                
-            # Check if duration has elapsed
-            if time.time() - self.start_time > self.duration:
-                self.running = False
-                print("Session duration ended")
-                return
-                
-            # Skip messages from before session start
-            if event.message.date.timestamp() < self.session_start_timestamp:
-                print(f"Skipping message from before session start")
-                return
-                
-            # Don't respond to own messages
-            if event.message.out:
-                return
-                
-            # Get recent messages for context
-            recent_messages = await self.get_recent_messages()
+            # Create client
+            api_id = self.config_instance.API_ID
+            api_hash = self.config_instance.API_HASH
             
-            # Pass the event to allow for direct replies
-            await self.send_ai_response(recent_messages, event)
-        
-        # Keep the client running
-        print(f"Bot running in {self.target_group} for {self.duration/60:.1f} minutes")
-        while self.running:
-            await asyncio.sleep(1)
-        
-        await self.stop()
+            print(f"Connecting to Telegram with API ID: {api_id}")
+            
+            # Create client
+            self.client = TelegramClient(
+                self.config_instance.SESSION_FILE,
+                api_id,
+                api_hash
+            )
+            
+            # Connect to Telegram
+            await self.client.connect()
+            
+            # Check authorization
+            if not await self.client.is_user_authorized():
+                raise Exception("Telegram authentication required. Please run the setup script first.")
+            
+            # Get target entity to validate
+            entity = await self.client.get_entity(self.target_group)
+            print(f"Successfully connected to {entity.title if hasattr(entity, 'title') else entity.first_name}")
+            
+            # Check if we're in a group or private chat
+            await self._check_chat_type()
+            
+            # Mark as running
+            self.running = True
+            self.start_time = time.time()
+            self.session_start_timestamp = self.start_time
+            
+            # Add message handler for all incoming messages
+            @self.client.on(events.NewMessage(chats=self.target_group))
+            async def message_handler(event):
+                # Skip messages from ourselves
+                me = await self.client.get_me()
+                if event.sender_id == me.id:
+                    return
+                
+                # Get recent messages for context
+                recent_messages = await self.get_recent_messages()
+                
+                # Send to AI and respond
+                await self.send_ai_response(recent_messages, event)
+            
+            # Wait for a short time to ensure client is fully connected before sending first message
+            await asyncio.sleep(1.0)
+            
+            # Send initial message
+            await self._send_initial_message()
+            
+            # Run the client until the duration expires or stopped
+            end_time = self.start_time + self.duration
+            while time.time() < end_time and self.running:
+                # Add a small sleep to prevent tight loops
+                await asyncio.sleep(1.0)
+            
+            # If we reached the end naturally
+            if time.time() >= end_time and self.running:
+                print(f"Bot duration ({self.duration/60} minutes) completed")
+                self.running = False
+            
+        except Exception as e:
+            print(f"Error in TelegramUserbot.start(): {e}")
+            self.running = False
+            raise
     
     async def stop(self):
-        """Stop the userbot safely with error handling"""
+        """Stop the Telegram client"""
         self.running = False
-        try:
-            if self.client and self.client.is_connected():
+        
+        # Disconnect client if it exists
+        if self.client:
+            try:
                 await self.client.disconnect()
-                print("Bot disconnected")
-        except Exception as e:
-            print(f"Error disconnecting client: {e}")
-        finally:
-            print("Bot stopped")
-            self.client = None  # Reset client to None
+            except Exception as e:
+                print(f"Error disconnecting Telegram client: {e}")

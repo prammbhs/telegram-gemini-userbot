@@ -1,0 +1,39 @@
+{
+  "name": "Telegram Gemini Bot",
+  "short_name": "TeleGemini",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#4361ee",
+  "theme_color": "#4361ee",
+  "description": "Create AI-powered bots for your Telegram account using Google's Gemini AI.",
+  "icons": [
+    {
+      "src": "/static/img/app-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/img/app-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Go to your bot dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/static/img/shortcut-dashboard.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Create Bot",
+      "short_name": "New Bot",
+      "description": "Create a new bot",
+      "url": "/create-bot",
+      "icons": [{ "src": "/static/img/shortcut-create.png", "sizes": "96x96" }]
+    }
+  ]
+}

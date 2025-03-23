@@ -1,0 +1,365 @@
+{% extends "base.html" %}
+
+{% block title %}Frequently Asked Questions - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-5 fw-bold mb-3">Frequently Asked Questions</h1>
+            <p class="lead mb-0">Find answers to the most common questions about Telegram Gemini Bot</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <div class="accordion" id="faqAccordion">
+                        <!-- General Questions -->
+                        <div class="mb-4">
+                            <h4 class="border-bottom pb-2">General Questions</h4>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingOne">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                                        What is Telegram Gemini Bot?
+                                    </button>
+                                </h2>
+                                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Telegram Gemini Bot is a web application that allows you to create AI-powered bots for your Telegram account. These bots use Google's Gemini AI to engage in natural conversations in Telegram groups or direct messages. The bots run on your personal Telegram account (as a userbot), giving them more capabilities than traditional Telegram bots.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingTwo">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        How does it differ from regular Telegram bots?
+                                    </button>
+                                </h2>
+                                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Unlike regular Telegram bots (which use the Bot API and have the word "bot" in their usernames), Telegram Gemini Bot runs as a userbot:</p>
+                                        <ul>
+                                            <li>It uses your personal Telegram account to send messages</li>
+                                            <li>It can join any group you have access to without needing admin permission</li>
+                                            <li>It appears to others as if you are typing and sending messages yourself</li>
+                                            <li>It can read message history and understand context from past conversations</li>
+                                        </ul>
+                                        <p>This allows for much more natural integration into group conversations.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingThree">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        Is this service free to use?
+                                    </button>
+                                </h2>
+                                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>We offer both free and premium tiers:</p>
+                                        <ul>
+                                            <li><strong>Free Tier:</strong> Create and run bots with limited usage (500 AI responses per month and a maximum of 30 minutes runtime per session)</li>
+                                            <li><strong>Premium Tier:</strong> Starts at $9.99/month and includes unlimited AI responses, longer bot sessions, priority support, and more advanced features</li>
+                                        </ul>
+                                        <p>You can also use your own Google Gemini API key, which may provide additional free quota based on Google's current offering.</p>
+                                        <p><a href="{{ url_for('pricing') }}" class="btn btn-sm btn-outline-primary mt-2">View Pricing Plans</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Account & Setup -->
+                        <div class="mb-4">
+                            <h4 class="border-bottom pb-2">Account & Setup</h4>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingFour">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        How do I verify my Telegram account?
+                                    </button>
+                                </h2>
+                                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>To verify your Telegram account:</p>
+                                        <ol>
+                                            <li>Go to your Profile page</li>
+                                            <li>Click on "Verify Telegram" in the Telegram Verification card</li>
+                                            <li>Enter your phone number (with country code)</li>
+                                            <li>We'll send a verification code to your Telegram app</li>
+                                            <li>Enter the code on the verification page</li>
+                                        </ol>
+                                        <p>After verification, your account is ready to use with our bots. This process is secure and uses Telegram's official authentication system.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingFive">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                                        What's a Gemini API key and how do I get one?
+                                    </button>
+                                </h2>
+                                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>A Gemini API key allows you to access Google's Gemini AI model, which powers the intelligence of your bots. To get one:</p>
+                                        <ol>
+                                            <li>Visit the <a href="https://ai.google.dev/" target="_blank">Google AI Studio</a></li>
+                                            <li>Sign in with your Google account</li>
+                                            <li>Go to the "API Keys" section</li>
+                                            <li>Click "Create API Key"</li>
+                                            <li>Copy the key</li>
+                                            <li>Paste it in your profile or during the setup wizard</li>
+                                        </ol>
+                                        <p>Using your own API key may give you additional free quota depending on Google's current offerings.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingSix">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                                        Is it safe to input my Telegram phone number?
+                                    </button>
+                                </h2>
+                                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Yes, your phone number is used solely for authenticating with Telegram's official API. We:</p>
+                                        <ul>
+                                            <li>Never store your phone number in plaintext</li>
+                                            <li>Use industry-standard security practices</li>
+                                            <li>Don't share your information with third parties</li>
+                                            <li>Don't use your number for marketing</li>
+                                        </ul>
+                                        <p>The verification process uses Telegram's official authentication flow, the same one used by the Telegram app itself.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Using Bots -->
+                        <div class="mb-4">
+                            <h4 class="border-bottom pb-2">Using Bots</h4>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingSeven">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSeven" aria-expanded="false" aria-controls="collapseSeven">
+                                        How do I create my first bot?
+                                    </button>
+                                </h2>
+                                <div id="collapseSeven" class="accordion-collapse collapse" aria-labelledby="headingSeven" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Creating a bot is simple:</p>
+                                        <ol>
+                                            <li>Go to your Dashboard and click "New Bot"</li>
+                                            <li>Enter a name for your bot</li>
+                                            <li>Specify the target group or chat (username, group name, or chat ID)</li>
+                                            <li>Define the context/persona (this shapes your bot's knowledge and personality)</li>
+                                            <li>Set a duration for how long the bot should run</li>
+                                            <li>Toggle the learning mode on/off</li>
+                                            <li>Click "Create Bot"</li>
+                                        </ol>
+                                        <p>After creating the bot, you can start it from the Dashboard or bot details page.</p>
+                                        <p><a href="{{ url_for('help_article', article='creating-first-bot') }}" class="text-decoration-none">See our detailed guide for creating your first bot →</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingEight">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+                                        What is the Learning Mode?
+                                    </button>
+                                </h2>
+                                <div id="collapseEight" class="accordion-collapse collapse" aria-labelledby="headingEight" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Learning Mode allows your bot to improve over time by analyzing conversations and adapting its responses. When enabled:</p>
+                                        <ul>
+                                            <li>The bot remembers successful response patterns</li>
+                                            <li>It learns from questions and answers to improve future responses</li>
+                                            <li>It tracks topic transitions to better follow conversation flow</li>
+                                            <li>It adapts to the communication style of group members</li>
+                                        </ul>
+                                        <p>Learning Mode data is stored securely and is only used to improve your specific bot. You can disable this feature at any time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingNine">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseNine" aria-expanded="false" aria-controls="collapseNine">
+                                        Can I customize my bot's responses?
+                                    </button>
+                                </h2>
+                                <div id="collapseNine" class="accordion-collapse collapse" aria-labelledby="headingNine" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Yes, you can significantly customize how your bot responds through the Context/Persona field when creating or editing a bot. You can define:</p>
+                                        <ul>
+                                            <li><strong>Personality traits:</strong> Friendly, technical, humorous, formal, etc.</li>
+                                            <li><strong>Knowledge areas:</strong> Specify what topics the bot should be knowledgeable about</li>
+                                            <li><strong>Response style:</strong> Brief replies, detailed explanations, casual conversational tone, etc.</li>
+                                            <li><strong>Character role:</strong> Make it act as a specific character or professional</li>
+                                        </ul>
+                                        <p>For example, you might define your bot as "a friendly cryptocurrency expert who explains concepts in simple terms and occasionally uses emojis."</p>
+                                        <p>The more specific your context, the more tailored your bot's responses will be.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Troubleshooting -->
+                        <div class="mb-4">
+                            <h4 class="border-bottom pb-2">Troubleshooting</h4>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingTen">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTen" aria-expanded="false" aria-controls="collapseTen">
+                                        My bot is not responding to messages
+                                    </button>
+                                </h2>
+                                <div id="collapseTen" class="accordion-collapse collapse" aria-labelledby="headingTen" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>If your bot isn't responding, check these common issues:</p>
+                                        <ol>
+                                            <li><strong>Bot Status:</strong> Verify that the bot shows as "Active" on your dashboard</li>
+                                            <li><strong>Telegram Verification:</strong> Ensure your Telegram account is properly verified</li>
+                                            <li><strong>API Key:</strong> Check if your Gemini API key is valid by testing it in your profile</li>
+                                            <li><strong>Target Group:</strong> Confirm the group/chat name or ID is correct</li>
+                                            <li><strong>API Quota:</strong> Check if you've exceeded your free tier API usage or Gemini quota</li>
+                                            <li><strong>Internet Connection:</strong> Ensure your server has a stable internet connection</li>
+                                        </ol>
+                                        <p>You can view detailed logs for your bot on its detail page, which can help identify specific errors.</p>
+                                        <p><a href="{{ url_for('help_troubleshooting') }}" class="text-decoration-none">See our troubleshooting guide for more details →</a></p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingEleven">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEleven" aria-expanded="false" aria-controls="collapseEleven">
+                                        I'm getting an "Invalid API Key" error
+                                    </button>
+                                </h2>
+                                <div id="collapseEleven" class="accordion-collapse collapse" aria-labelledby="headingEleven" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>If you're seeing an "Invalid API Key" error:</p>
+                                        <ol>
+                                            <li>Go to your Profile page</li>
+                                            <li>Check your Gemini API key for typos or extra spaces</li>
+                                            <li>Use the "Test Key" button to validate it</li>
+                                            <li>If your key is invalid, get a new one from <a href="https://ai.google.dev/" target="_blank">Google AI Studio</a></li>
+                                            <li>Make sure you're using a Gemini API key, not a different Google API key</li>
+                                        </ol>
+                                        <p>You can also try using our provided API credits by removing your custom API key.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingTwelve">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwelve" aria-expanded="false" aria-controls="collapseTwelve">
+                                        Telegram verification is failing
+                                    </button>
+                                </h2>
+                                <div id="collapseTwelve" class="accordion-collapse collapse" aria-labelledby="headingTwelve" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>If you're having trouble with Telegram verification:</p>
+                                        <ol>
+                                            <li>Ensure you're entering the correct phone number with country code</li>
+                                            <li>Check that you're using the same phone number associated with your Telegram account</li>
+                                            <li>Make sure you're entering the verification code exactly as received in Telegram</li>
+                                            <li>If you have two-factor authentication enabled on Telegram, you'll need to enter your 2FA password when prompted</li>
+                                            <li>Try logging out of Telegram on other devices and then verify again</li>
+                                        </ol>
+                                        <p>If issues persist, try the "Re-authenticate" option on the Telegram verification page or contact our support team.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Billing & Subscription -->
+                        <div>
+                            <h4 class="border-bottom pb-2">Billing & Subscription</h4>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingThirteen">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThirteen" aria-expanded="false" aria-controls="collapseThirteen">
+                                        How do I upgrade to a premium plan?
+                                    </button>
+                                </h2>
+                                <div id="collapseThirteen" class="accordion-collapse collapse" aria-labelledby="headingThirteen" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>To upgrade to a premium plan:</p>
+                                        <ol>
+                                            <li>Go to the <a href="{{ url_for('pricing') }}">Pricing page</a></li>
+                                            <li>Select the plan that best fits your needs</li>
+                                            <li>Click "Upgrade Now"</li>
+                                            <li>Enter your payment information</li>
+                                            <li>Confirm your subscription</li>
+                                        </ol>
+                                        <p>Your premium features will be activated immediately after your payment is processed. You can manage your subscription from your Profile page.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingFourteen">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFourteen" aria-expanded="false" aria-controls="collapseFourteen">
+                                        Can I cancel my subscription?
+                                    </button>
+                                </h2>
+                                <div id="collapseFourteen" class="accordion-collapse collapse" aria-labelledby="headingFourteen" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>Yes, you can cancel your subscription at any time:</p>
+                                        <ol>
+                                            <li>Go to your Profile page</li>
+                                            <li>Navigate to the "Subscription" section</li>
+                                            <li>Click "Manage Subscription"</li>
+                                            <li>Select "Cancel Subscription"</li>
+                                        </ol>
+                                        <p>After cancellation, your premium features will remain active until the end of your current billing cycle. You won't be charged again, and your account will revert to the free tier at the end of the period.</p>
+                                        <p>There are no cancellation fees, and you can resubscribe at any time.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item border-0 mb-3">
+                                <h2 class="accordion-header" id="headingFifteen">
+                                    <button class="accordion-button collapsed bg-light" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFifteen" aria-expanded="false" aria-controls="collapseFifteen">
+                                        Do you offer refunds?
+                                    </button>
+                                </h2>
+                                <div id="collapseFifteen" class="accordion-collapse collapse" aria-labelledby="headingFifteen" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        <p>We offer a 7-day money-back guarantee on all new subscriptions. If you're not satisfied with our premium service within the first 7 days:</p>
+                                        <ol>
+                                            <li>Contact our support team through the <a href="{{ url_for('help_contact') }}">Contact page</a></li>
+                                            <li>Explain the reason for your refund request</li>
+                                            <li>Our team will process your refund within 3-5 business days</li>
+                                        </ol>
+                                        <p>For subscriptions older than 7 days, refunds are handled on a case-by-case basis, typically for service issues or technical problems on our end.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h4>Still have questions?</h4>
+            <p class="mb-4">Our support team is ready to help you with any other questions you might have.</p>
+            <a href="{{ url_for('help_contact') }}" class="btn btn-primary">
+                <i class="bi bi-headset me-2"></i>Contact Support
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Telegram Verification - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Telegram Verification</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="text-center mb-4">
+                    <div class="icon-circle bg-info-subtle mb-3 mx-auto">
+                        <i class="bi bi-telegram text-info" style="font-size: 2rem;"></i>
+                    </div>
+                    <h5>Enter Verification Code</h5>
+                    <p class="text-muted">We've sent a verification code to your Telegram app.</p>
+                </div>
+                
+                <form method="POST" action="{{ url_for('telegram_verification_code') }}">
+                    <div class="mb-4">
+                        <label for="verification_code" class="form-label">Verification Code</label>
+                        <input type="text" class="form-control form-control-lg text-center" 
+                               id="verification_code" name="verification_code" 
+                               placeholder="••••••" required autofocus
+                               style="letter-spacing: 0.5em; font-size: 1.5rem;">
+                        <div class="form-text">Enter the code exactly as shown in Telegram</div>
+                    </div>
+                    
+                    {% if needs_2fa %}
+                    <div class="mb-4">
+                        <label for="two_factor_password" class="form-label">Two-Factor Authentication Password</label>
+                        <input type="password" class="form-control" 
+                               id="two_factor_password" name="two_factor_password" 
+                               placeholder="Your 2FA password" required>
+                        <div class="form-text">Enter your Telegram 2FA password</div>
+                    </div>
+                    {% endif %}
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="bi bi-check-circle me-2"></i>Verify Code
+                        </button>
+                    </div>
+                </form>
+                
+                <div class="mt-4">
+                    <div class="alert alert-info">
+                        <h6><i class="bi bi-info-circle me-2"></i>Where to find the code?</h6>
+                        <p class="small mb-0">The verification code was sent to your Telegram app. Look for a message from "Telegram" with a code in the format: <span class="fw-bold">12345</span></p>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('verify_telegram') }}" class="btn btn-link">
+                        <i class="bi bi-arrow-left me-1"></i>Back to Telegram Setup
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Format verification code input
+        const codeInput = document.getElementById('verification_code');
+        if (codeInput) {
+            codeInput.addEventListener('input', function(e) {
+                // Remove any non-digit characters
+                this.value = this.value.replace(/\D/g, '');
+                
+                // Limit to 5 characters for typical Telegram codes
+                if (this.value.length > 5) {
+                    this.value = this.value.substring(0, 5);
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

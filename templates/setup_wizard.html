@@ -1,0 +1,302 @@
+{% extends "base.html" %}
+
+{% block title %}Setup Wizard - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <h4 class="mb-0"><i class="bi bi-magic me-2"></i>Welcome to Telegram Gemini Bot</h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="setup-intro text-center mb-4">
+                    <h2>Let's get you set up!</h2>
+                    <p class="lead">Complete these steps to start creating your AI-powered Telegram bots.</p>
+                </div>
+
+                <div class="progress mb-4" style="height: 10px;">
+                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%;" id="setup-progress"></div>
+                </div>
+
+                <form id="setup-form" method="POST" action="{{ url_for('complete_setup') }}">
+                    <!-- Step 1: Gemini API Key -->
+                    <div class="setup-step" id="step1">
+                        <h3 class="border-bottom pb-2 mb-4"><i class="bi bi-key me-2"></i>Step 1: Google Gemini API</h3>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>What is Google Gemini?</strong>
+                            <p>Google Gemini is an AI model that powers your bot's intelligence. You'll need an API key to access it.</p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-7">
+                                <div class="mb-3">
+                                    <label for="gemini_api_key" class="form-label">Google Gemini API Key</label>
+                                    <div class="input-group">
+                                        <input type="password" class="form-control" id="gemini_api_key" name="gemini_api_key" required>
+                                        <button class="btn btn-outline-secondary toggle-password" type="button" data-target="#gemini_api_key">
+                                            <i class="bi bi-eye"></i>
+                                        </button>
+                                    </div>
+                                    <div class="form-text">Enter your Gemini API key to enable AI functionality.</div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-5">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="bi bi-question-circle me-2"></i>How to get an API key:</h5>
+                                        <ol class="ps-3">
+                                            <li>Go to <a href="https://ai.google.dev/" target="_blank">Google AI Studio</a></li>
+                                            <li>Create a Google account or sign in</li>
+                                            <li>Go to "API Keys" section</li>
+                                            <li>Click "Create API Key"</li>
+                                            <li>Copy the key and paste it here</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-end">
+                            <button type="button" class="btn btn-primary next-step">Continue <i class="bi bi-arrow-right ms-1"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Telegram Phone Number (removed API ID/Hash) -->
+                    <div class="setup-step" id="step2" style="display: none;">
+                        <h3 class="border-bottom pb-2 mb-4"><i class="bi bi-telegram me-2"></i>Step 2: Telegram Account</h3>
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Connect Your Telegram</strong>
+                            <p>We need to link your Telegram account to send messages. You'll verify with your phone number.</p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-7">
+                                <div class="mb-3">
+                                    <label for="telegram_phone" class="form-label">Your Telegram Phone Number</label>
+                                    <div class="row g-0">
+                                        <div class="col-4 col-sm-3">
+                                            <select class="form-select" id="telegram_country_code" name="telegram_country_code">
+                                                <option value="">Select...</option>
+                                                <option value="+1">+1 (US/CA)</option>
+                                                <option value="+44">+44 (UK)</option>
+                                                <option value="+91">+91 (IN)</option>
+                                                <option value="+49">+49 (DE)</option>
+                                                <option value="+33">+33 (FR)</option>
+                                                <option value="+61">+61 (AU)</option>
+                                                <option value="+7">+7 (RU)</option>
+                                                <option value="+86">+86 (CN)</option>
+                                                <option value="+81">+81 (JP)</option>
+                                                <option value="+82">+82 (KR)</option>
+                                                <option value="+55">+55 (BR)</option>
+                                                <option value="+52">+52 (MX)</option>
+                                                <option value="+971">+971 (AE)</option>
+                                                <option value="+65">+65 (SG)</option>
+                                                <option value="+34">+34 (ES)</option>
+                                                <option value="+39">+39 (IT)</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-8 col-sm-9">
+                                            <input type="text" class="form-control" id="telegram_phone" name="telegram_phone" 
+                                                  placeholder="1234567890" required>
+                                        </div>
+                                    </div>
+                                    <div class="form-text">
+                                        Select your country code and enter your phone number without the country code prefix.
+                                    </div>
+                                </div>
+
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    <strong>Important:</strong>
+                                    <p class="mb-0">After completing setup, you'll need to verify this number by entering a code sent to your Telegram app.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-5">
+                                <div class="card bg-light">
+                                    <div class="card-body">
+                                        <h5 class="card-title"><i class="bi bi-question-circle me-2"></i>Why do we need this?</h5>
+                                        <p>Your phone number is used to authenticate with Telegram, allowing the bot to send messages as you.</p>
+                                        
+                                        <h6 class="mt-3">Security Note:</h6>
+                                        <p class="small mb-0">Your phone number is stored securely and only used for Telegram authentication. We never share your data with third parties.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="bi bi-arrow-left me-1"></i> Back</button>
+                            <button type="button" class="btn btn-primary next-step">Continue <i class="bi bi-arrow-right ms-1"></i></button>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 3: Confirm and Complete -->
+                    <div class="setup-step" id="step3" style="display: none;">
+                        <h3 class="border-bottom pb-2 mb-4"><i class="bi bi-check-circle me-2"></i>Step 3: Complete Setup</h3>
+                        
+                        <div class="alert alert-success">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            <strong>You're almost done!</strong>
+                            <p>Please verify your information before completing the setup.</p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-header">
+                                        <i class="bi bi-key me-2"></i>Google Gemini API
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">API Key: <span class="text-muted" id="summary-gemini-key">•••••••••••••••</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-header">
+                                        <i class="bi bi-telegram me-2"></i>Telegram Account
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text mb-1">Phone Number: <span id="summary-telegram-phone"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-outline-secondary prev-step"><i class="bi bi-arrow-left me-1"></i> Back</button>
+                            <button type="submit" class="btn btn-success"><i class="bi bi-check-circle me-1"></i> Complete Setup</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        let currentStep = 1;
+        const totalSteps = 3;
+        
+        // Next step buttons
+        document.querySelectorAll('.next-step').forEach(button => {
+            button.addEventListener('click', function() {
+                // Validate current step
+                if (!validateStep(currentStep)) {
+                    return;
+                }
+                // Hide current step
+                document.getElementById(`step${currentStep}`).style.display = 'none';
+                
+                // Show next step
+                currentStep++;
+                document.getElementById(`step${currentStep}`).style.display = 'block';
+                
+                // Update progress bar
+                updateProgressBar();
+                
+                // Update summary if on last step
+                if (currentStep === 3) {
+                    updateSummary();
+                }
+            });
+        });
+        
+        // Previous step buttons
+        document.querySelectorAll('.prev-step').forEach(button => {
+            button.addEventListener('click', function() {
+                // Hide current step
+                document.getElementById(`step${currentStep}`).style.display = 'none';
+                
+                // Show previous step
+                currentStep--;
+                document.getElementById(`step${currentStep}`).style.display = 'block';
+                
+                // Update progress bar
+                updateProgressBar();
+            });
+        });
+        
+        // Password toggle buttons
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordField = document.querySelector(targetId);
+                const icon = this.querySelector('i');
+                
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    passwordField.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        });
+        
+        // Function to update progress bar
+        function updateProgressBar() {
+            const progressPercent = ((currentStep - 1) / (totalSteps - 1)) * 100;
+            document.getElementById('setup-progress').style.width = `${progressPercent}%`;
+        }
+        
+        // Function to validate step inputs
+        function validateStep(step) {
+            if (step === 1) {
+                const geminiKey = document.getElementById('gemini_api_key').value;
+                if (!geminiKey) {
+                    alert('Please enter your Gemini API key');
+                    return false;
+                }
+            } else if (step === 2) {
+                const telegramCountryCode = document.getElementById('telegram_country_code').value;
+                const telegramPhone = document.getElementById('telegram_phone').value;
+                if (!telegramCountryCode || !telegramPhone) {
+                    alert('Please enter both country code and phone number');
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+        // Function to update summary
+        function updateSummary() {
+            document.getElementById('summary-gemini-key').textContent = '•••••••••••••••';
+            const countryCode = document.getElementById('telegram_country_code').value;
+            const phoneNumber = document.getElementById('telegram_phone').value;
+            if (countryCode && phoneNumber) {
+                document.getElementById('summary-telegram-phone').textContent = countryCode + phoneNumber;
+            }
+        }
+        
+        // Format phone number input
+        const phoneInput = document.getElementById('telegram_phone');
+        phoneInput.addEventListener('input', function(e) {
+            // Remove any non-digit characters
+            this.value = this.value.replace(/\D/g, '');
+            
+            // Apply formatting if needed
+            if (this.value.length > 3 && this.value.length <= 6) {
+                this.value = this.value.slice(0, 3) + '-' + this.value.slice(3);
+            } else if (this.value.length > 6) {
+                this.value = this.value.slice(0, 3) + '-' + this.value.slice(3, 6) + '-' + this.value.slice(6, 10);
+            }
+        });
+        
+        // Initialize progress bar
+        updateProgressBar();
+    });
+</script>
+{% endblock %}

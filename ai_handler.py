@@ -18,16 +18,28 @@ except ImportError:
     DB_HANDLER_AVAILABLE = False
 
 class GeminiAI:
-    def __init__(self, super_context, api_key=None):
+    def __init__(self, super_context, api_key=None, user_id=None):
         self.super_context = super_context
+        self.api_key_valid = False
+        self.user_id = user_id
         
         # Use provided API key if available, otherwise fall back to config
         if api_key:
-            genai.configure(api_key=api_key)
+            self.api_key = api_key
         else:
-            genai.configure(api_key=config.GEMINI_API_KEY)
+            self.api_key = config.GEMINI_API_KEY
+        
+        # Track if we're using the free tier API key
+        self.using_free_tier = (self.api_key == config.FREE_TIER_API_KEY)
             
-        self.model = genai.GenerativeModel('gemini-1.5-flash')
+        # Validate API key before configuring
+        if self._validate_api_key():
+            genai.configure(api_key=self.api_key)
+            self.model = genai.GenerativeModel('gemini-1.5-flash')
+            self.api_key_valid = True
+        else:
+            print(f"WARNING: Invalid Gemini API key - bot will use fallback responses")
+            self.model = None
         
         # Extract name and role from super_context
         self.persona_name, self.persona_role = self._extract_persona_from_context(super_context)
@@ -100,6 +112,25 @@ class GeminiAI:
             "naukri", "job", "kaam", "paisa", "salary", "interview", "company"
         ]
 
+    def _validate_api_key(self):
+        """Validate the API key format and attempt a simple test call"""
+        if not self.api_key or len(self.api_key) < 10:
+            return False
+            
+        try:
+            # Configure genai temporarily for validation
+            genai.configure(api_key=self.api_key)
+            
+            # Try a simple generation with minimal tokens to validate the key
+            test_model = genai.GenerativeModel('gemini-1.5-flash')
+            response = test_model.generate_content("Hello")
+            
+            # If we get here, the key is valid
+            return True
+        except Exception as e:
+            print(f"API key validation error: {e}")
+            return False
+
     def _extract_persona_from_context(self, context):
         """Extract name and role from the super context"""
         # Default values
@@ -139,6 +170,14 @@ class GeminiAI:
 
     async def generate_initial_message(self, is_group_chat=True):
         """Generate an initial message based on the super context and chat type"""
+        # Check if API key is valid before attempting to generate
+        if not self.api_key_valid:
+            print("Using fallback initial message due to invalid API key")
+            if is_group_chat:
+                return f"Hey! Thoughts on {self.super_context}? {random.choice(self.emojis)}"
+            else:
+                return f"Hey! I'm {self.persona_name}. Let's chat about {self.super_context}! {random.choice(self.emojis)}"
+                
         # For direct messages, always start with a brief introduction
         if not is_group_chat:
             introduction_prompt = f"""
@@ -437,6 +476,38 @@ class GeminiAI:
 
     async def generate_response(self, message_history, is_group_chat=True, message_id_to_reply=None):
         """Generate a response based on chat history and super context"""
+        # Track API usage for free tier if applicable
+        if self.using_free_tier and self.user_id and self.api_key_valid:
+            config.increment_api_usage(self.user_id)
+        
+        # Check if API key is valid before attempting to generate
+        if not self.api_key_valid:
+            print("Using fallback response due to invalid API key")
+            # Different generic responses to avoid repetition
+            generic_responses = [
+                "Interesting point!",
+                "Makes sense!",
+                "Good to know!",
+                "Tell me more?",
+                "Cool!", 
+                "That's neat!",
+                "Thanks for sharing!",
+                "Got it!",
+                "Totally get it",
+                "That's wild",
+                "No way!",
+                "For real?",
+                "Keep going..."
+            ]
+            response = random.choice(generic_responses)
+            if random.random() < 0.45:
+                response += f" {random.choice(self.emojis)}"
+                
+            return {
+                "messages": [response],
+                "should_reply": message_id_to_reply is not None and random.random() < 0.3
+            }
+            
         # Get the last message
         last_message = message_history[-1] if message_history else ""
         

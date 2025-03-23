@@ -1,0 +1,680 @@
+{% extends "base.html" %}
+
+{% block title %}Community - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-12 text-center">
+            <h1 class="display-4 fw-bold mb-3">Community</h1>
+            <p class="lead">Connect with other users, share bot templates, and help shape the future of Telegram Gemini Bot</p>
+        </div>
+    </div>
+
+    <!-- Community Tabs -->
+    <div class="row mb-4">
+        <div class="col-lg-10 mx-auto">
+            <ul class="nav nav-pills nav-justified mb-4" id="communityTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="testimonials-tab" data-bs-toggle="pill" data-bs-target="#testimonials" type="button" role="tab" aria-controls="testimonials" aria-selected="true">
+                        <i class="bi bi-chat-quote me-2"></i>Testimonials
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="feature-requests-tab" data-bs-toggle="pill" data-bs-target="#feature-requests" type="button" role="tab" aria-controls="feature-requests" aria-selected="false">
+                        <i class="bi bi-lightbulb me-2"></i>Feature Requests
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="showcase-tab" data-bs-toggle="pill" data-bs-target="#showcase" type="button" role="tab" aria-controls="showcase" aria-selected="false">
+                        <i class="bi bi-display me-2"></i>Bot Showcase
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="forum-tab" data-bs-toggle="pill" data-bs-target="#forum" type="button" role="tab" aria-controls="forum" aria-selected="false">
+                        <i class="bi bi-people me-2"></i>Discussion
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="communityTabsContent">
+                <!-- Testimonials Tab -->
+                <div class="tab-pane fade show active" id="testimonials" role="tabpanel" aria-labelledby="testimonials-tab">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">User Testimonials</h5>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addTestimonialModal">
+                                    <i class="bi bi-plus-circle me-1"></i> Add Your Testimonial
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row">
+                                <!-- Testimonial 1 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                                        <div class="card-body p-4">
+                                            <div class="d-flex mb-3">
+                                                <img src="{{ url_for('static', filename='img/testimonials/user1.jpg') }}" class="rounded-circle me-3" width="60" height="60" alt="User Avatar">
+                                                <div>
+                                                    <h5 class="mb-1">Alex Chen</h5>
+                                                    <p class="text-muted mb-0">Community Manager @ TechCorp</p>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            </div>
+                                            <p class="card-text">"This bot has completely transformed how we engage with our Telegram community. The AI responses are incredibly natural, and the learning feature means it gets smarter over time. It's saved me countless hours of repetitive responses."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Testimonial 2 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                                        <div class="card-body p-4">
+                                            <div class="d-flex mb-3">
+                                                <img src="{{ url_for('static', filename='img/testimonials/user2.jpg') }}" class="rounded-circle me-3" width="60" height="60" alt="User Avatar">
+                                                <div>
+                                                    <h5 class="mb-1">Sophia Rodriguez</h5>
+                                                    <p class="text-muted mb-0">Freelance Developer</p>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-half text-warning"></i>
+                                            </div>
+                                            <p class="card-text">"I set up a bot to handle FAQs in my client's Telegram group and it's been a game-changer. The analytics help me understand what questions come up most often, and the bot handles about 80% of routine questions without my intervention."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Testimonial 3 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                                        <div class="card-body p-4">
+                                            <div class="d-flex mb-3">
+                                                <img src="{{ url_for('static', filename='img/testimonials/user3.jpg') }}" class="rounded-circle me-3" width="60" height="60" alt="User Avatar">
+                                                <div>
+                                                    <h5 class="mb-1">Michael Johnson</h5>
+                                                    <p class="text-muted mb-0">Crypto Community Lead</p>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star text-warning"></i>
+                                            </div>
+                                            <p class="card-text">"Running a crypto community means being available 24/7 for questions. This bot has been my virtual assistant, helping newcomers with basic questions while I focus on more complex issues. The customization options are fantastic."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Testimonial 4 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm hover-lift">
+                                        <div class="card-body p-4">
+                                            <div class="d-flex mb-3">
+                                                <img src="{{ url_for('static', filename='img/testimonials/user4.jpg') }}" class="rounded-circle me-3" width="60" height="60" alt="User Avatar">
+                                                <div>
+                                                    <h5 class="mb-1">Aisha Patel</h5>
+                                                    <p class="text-muted mb-0">Marketing Director</p>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                                <i class="bi bi-star-fill text-warning"></i>
+                                            </div>
+                                            <p class="card-text">"We've integrated this bot into our product support channel and the results have been outstanding. Customer satisfaction is up, and we're able to handle a much higher volume of inquiries with the same team size."</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Trusted By Companies -->
+                            <div class="mt-5">
+                                <h5 class="text-center mb-4">Trusted By</h5>
+                                <div class="row justify-content-center align-items-center">
+                                    <div class="col-4 col-md-2 mb-4 text-center">
+                                        <img src="{{ url_for('static', filename='img/companies/company1.svg') }}" alt="Company Logo" class="img-fluid" style="max-height: 40px; opacity: 0.7;">
+                                    </div>
+                                    <div class="col-4 col-md-2 mb-4 text-center">
+                                        <img src="{{ url_for('static', filename='img/companies/company2.svg') }}" alt="Company Logo" class="img-fluid" style="max-height: 40px; opacity: 0.7;">
+                                    </div>
+                                    <div class="col-4 col-md-2 mb-4 text-center">
+                                        <img src="{{ url_for('static', filename='img/companies/company3.svg') }}" alt="Company Logo" class="img-fluid" style="max-height: 40px; opacity: 0.7;">
+                                    </div>
+                                    <div class="col-4 col-md-2 mb-4 text-center">
+                                        <img src="{{ url_for('static', filename='img/companies/company4.svg') }}" alt="Company Logo" class="img-fluid" style="max-height: 40px; opacity: 0.7;">
+                                    </div>
+                                    <div class="col-4 col-md-2 mb-4 text-center">
+                                        <img src="{{ url_for('static', filename='img/companies/company5.svg') }}" alt="Company Logo" class="img-fluid" style="max-height: 40px; opacity: 0.7;">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Feature Requests Tab -->
+                <div class="tab-pane fade" id="feature-requests" role="tabpanel" aria-labelledby="feature-requests-tab">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Feature Requests</h5>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#addFeatureRequestModal">
+                                    <i class="bi bi-plus-circle me-1"></i> Suggest Feature
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    <div class="alert bg-light border-0">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0">
+                                                <i class="bi bi-info-circle text-primary fs-4 me-3"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="alert-heading">Help Shape the Product</h5>
+                                                <p class="mb-0">Vote on existing feature requests or suggest new ones to help us prioritize what to build next. Features with more votes are more likely to be implemented sooner.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="feature-requests">
+                                <!-- Feature Request 1 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="feature-vote me-4 text-center">
+                                                <button class="btn btn-outline-primary vote-button rounded-circle mb-2">
+                                                    <i class="bi bi-caret-up-fill"></i>
+                                                </button>
+                                                <div class="vote-count fw-bold">128</div>
+                                            </div>
+                                            <div class="feature-content flex-grow-1">
+                                                <h5>Multi-language Support</h5>
+                                                <p>Add support for bots to understand and respond in multiple languages.</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-success me-2">Planned</span>
+                                                    <small>Suggested by <strong>David L.</strong> on May 12, 2023</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Feature Request 2 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="feature-vote me-4 text-center">
+                                                <button class="btn btn-outline-primary vote-button rounded-circle mb-2">
+                                                    <i class="bi bi-caret-up-fill"></i>
+                                                </button>
+                                                <div class="vote-count fw-bold">86</div>
+                                            </div>
+                                            <div class="feature-content flex-grow-1">
+                                                <h5>Voice Message Responses</h5>
+                                                <p>Enable bots to respond to voice messages and optionally respond with voice.</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-primary me-2">Under Review</span>
+                                                    <small>Suggested by <strong>Sarah K.</strong> on June 3, 2023</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Feature Request 3 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="feature-vote me-4 text-center">
+                                                <button class="btn btn-outline-primary vote-button rounded-circle mb-2">
+                                                    <i class="bi bi-caret-up-fill"></i>
+                                                </button>
+                                                <div class="vote-count fw-bold">52</div>
+                                            </div>
+                                            <div class="feature-content flex-grow-1">
+                                                <h5>Scheduled Messages</h5>
+                                                <p>Allow bots to send scheduled messages at specific times or intervals.</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-info me-2">In Development</span>
+                                                    <small>Suggested by <strong>Mike T.</strong> on July 19, 2023</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Feature Request 4 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="feature-vote me-4 text-center">
+                                                <button class="btn btn-outline-primary vote-button rounded-circle mb-2">
+                                                    <i class="bi bi-caret-up-fill"></i>
+                                                </button>
+                                                <div class="vote-count fw-bold">37</div>
+                                            </div>
+                                            <div class="feature-content flex-grow-1">
+                                                <h5>Improved Analytics Exports</h5>
+                                                <p>Add options to export analytics data in CSV/Excel format for further analysis.</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-secondary me-2">Considering</span>
+                                                    <small>Suggested by <strong>Jennifer R.</strong> on August 5, 2023</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bot Showcase Tab -->
+                <div class="tab-pane fade" id="showcase" role="tabpanel" aria-labelledby="showcase-tab">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Community Bot Showcase</h5>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#submitShowcaseModal">
+                                    <i class="bi bi-upload me-1"></i> Submit Your Bot
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    <div class="alert bg-light border-0">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0">
+                                                <i class="bi bi-lightbulb text-warning fs-4 me-3"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="alert-heading">Share Your Creations</h5>
+                                                <p class="mb-0">Showcase your bots, get feedback from the community, and even allow others to clone your configurations (if you choose).</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <!-- Showcase Bot 1 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-header bg-gradient-primary text-white">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">Crypto News Assistant</h5>
+                                                <span class="badge bg-white text-primary">Finance</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">A bot that monitors crypto discussions, provides price updates, and explains complex blockchain concepts in simple terms.</p>
+                                            <div class="mb-3">
+                                                <span class="badge bg-light text-dark me-1">Crypto</span>
+                                                <span class="badge bg-light text-dark me-1">Bitcoin</span>
+                                                <span class="badge bg-light text-dark me-1">DeFi</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <small class="text-muted">By <strong>CryptoMaster</strong></small>
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-files me-1"></i> Clone Template
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Showcase Bot 2 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-header bg-gradient-success text-white">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">Community Onboarding</h5>
+                                                <span class="badge bg-white text-success">Support</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">Welcomes new members to your group, explains rules, and provides helpful resources to get them started quickly.</p>
+                                            <div class="mb-3">
+                                                <span class="badge bg-light text-dark me-1">Onboarding</span>
+                                                <span class="badge bg-light text-dark me-1">Welcome</span>
+                                                <span class="badge bg-light text-dark me-1">FAQ</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <small class="text-muted">By <strong>CommunityPro</strong></small>
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-files me-1"></i> Clone Template
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Showcase Bot 3 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-header bg-gradient-danger text-white">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">Tech Support Helper</h5>
+                                                <span class="badge bg-white text-danger">Tech</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">Diagnoses common tech problems and suggests solutions for troubleshooting hardware and software issues.</p>
+                                            <div class="mb-3">
+                                                <span class="badge bg-light text-dark me-1">IT Support</span>
+                                                <span class="badge bg-light text-dark me-1">Troubleshooting</span>
+                                                <span class="badge bg-light text-dark me-1">Tech Help</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <small class="text-muted">By <strong>TechGeek</strong></small>
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-files me-1"></i> Clone Template
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Showcase Bot 4 -->
+                                <div class="col-md-6 mb-4">
+                                    <div class="card h-100 border-0 shadow-sm">
+                                        <div class="card-header bg-gradient-info text-white">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <h5 class="mb-0">Language Learning Coach</h5>
+                                                <span class="badge bg-white text-info">Education</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-body">
+                                            <p class="card-text">Helps users practice a new language with conversations, corrections, and daily vocabulary challenges.</p>
+                                            <div class="mb-3">
+                                                <span class="badge bg-light text-dark me-1">Language</span>
+                                                <span class="badge bg-light text-dark me-1">Learning</span>
+                                                <span class="badge bg-light text-dark me-1">Education</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                                <small class="text-muted">By <strong>LinguistPro</strong></small>
+                                                <button class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-files me-1"></i> Clone Template
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Forum/Discussion Tab -->
+                <div class="tab-pane fade" id="forum" role="tabpanel" aria-labelledby="forum-tab">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Community Discussion</h5>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createTopicModal">
+                                    <i class="bi bi-plus-circle me-1"></i> New Topic
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-4">
+                                <strong class="me-2">Filter by:</strong>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-primary active">All Topics</button>
+                                    <button type="button" class="btn btn-outline-primary">Tips & Tricks</button>
+                                    <button type="button" class="btn btn-outline-primary">Questions</button>
+                                    <button type="button" class="btn btn-outline-primary">Showcases</button>
+                                    <button type="button" class="btn btn-outline-primary">Announcements</button>
+                                </div>
+                            </div>
+
+                            <div class="forum-topics">
+                                <!-- Topic 1 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="forum-stats text-center me-3">
+                                                <div class="reply-count border-bottom pb-2">
+                                                    <span class="fs-4 fw-bold">24</span><br>
+                                                    <small>Replies</small>
+                                                </div>
+                                                <div class="view-count pt-2">
+                                                    <span class="fs-6">452</span><br>
+                                                    <small>Views</small>
+                                                </div>
+                                            </div>
+                                            <div class="forum-content flex-grow-1">
+                                                <h5><a href="#">Best practices for complex conversational flows with Gemini</a></h5>
+                                                <p class="text-truncate mb-2">I've been working on a bot that handles multi-turn conversations with lots of context. Here are some tips I've found valuable...</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-primary me-2">Tips & Tricks</span>
+                                                    <small>Started by <strong>AI_Explorer</strong> · Last reply 2 hours ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Topic 2 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="forum-stats text-center me-3">
+                                                <div class="reply-count border-bottom pb-2">
+                                                    <span class="fs-4 fw-bold">18</span><br>
+                                                    <small>Replies</small>
+                                                </div>
+                                                <div class="view-count pt-2">
+                                                    <span class="fs-6">327</span><br>
+                                                    <small>Views</small>
+                                                </div>
+                                            </div>
+                                            <div class="forum-content flex-grow-1">
+                                                <h5><a href="#">[Announcement] New learning mode features coming soon!</a></h5>
+                                                <p class="text-truncate mb-2">We're excited to announce some major improvements to the learning capabilities of your bots, scheduled for release next week...</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-danger me-2">Announcement</span>
+                                                    <small>Posted by <strong>Admin</strong> · 2 days ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Topic 3 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="forum-stats text-center me-3">
+                                                <div class="reply-count border-bottom pb-2">
+                                                    <span class="fs-4 fw-bold">12</span><br>
+                                                    <small>Replies</small>
+                                                </div>
+                                                <div class="view-count pt-2">
+                                                    <span class="fs-6">289</span><br>
+                                                    <small>Views</small>
+                                                </div>
+                                            </div>
+                                            <div class="forum-content flex-grow-1">
+                                                <h5><a href="#">How to make my bot sound more natural?</a></h5>
+                                                <p class="text-truncate mb-2">My bot responses sound too formal and robotic. Any tips on making it sound more casual and human-like?</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-info me-2">Question</span>
+                                                    <small>Asked by <strong>NewUser42</strong> · Last reply 1 day ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Topic 4 -->
+                                <div class="card mb-3 border shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex">
+                                            <div class="forum-stats text-center me-3">
+                                                <div class="reply-count border-bottom pb-2">
+                                                    <span class="fs-4 fw-bold">7</span><br>
+                                                    <small>Replies</small>
+                                                </div>
+                                                <div class="view-count pt-2">
+                                                    <span class="fs-6">146</span><br>
+                                                    <small>Views</small>
+                                                </div>
+                                            </div>
+                                            <div class="forum-content flex-grow-1">
+                                                <h5><a href="#">Showcase: My customer service bot with 98% satisfaction rate</a></h5>
+                                                <p class="text-truncate mb-2">After 3 months of refinement, my support bot is handling 500+ inquiries daily with a 98% satisfaction rate. Here's how I set it up...</p>
+                                                <div class="d-flex align-items-center text-muted">
+                                                    <span class="badge bg-success me-2">Showcase</span>
+                                                    <small>Posted by <strong>SupportGuru</strong> · 4 days ago</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modals -->
+<!-- Add Testimonial Modal -->
+<div class="modal fade" id="addTestimonialModal" tabindex="-1" aria-labelledby="addTestimonialModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTestimonialModalLabel">Share Your Experience</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="testimonial-name" class="form-label">Your Name</label>
+                        <input type="text" class="form-control" id="testimonial-name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="testimonial-title" class="form-label">Job Title/Company (Optional)</label>
+                        <input type="text" class="form-control" id="testimonial-title">
+                    </div>
+                    <div class="mb-3">
+                        <label for="testimonial-rating" class="form-label">Rating</label>
+                        <select class="form-select" id="testimonial-rating" required>
+                            <option value="5">5 Stars</option>
+                            <option value="4">4 Stars</option>
+                            <option value="3">3 Stars</option>
+                            <option value="2">2 Stars</option>
+                            <option value="1">1 Star</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="testimonial-text" class="form-label">Your Testimonial</label>
+                        <textarea class="form-control" id="testimonial-text" rows="4" required></textarea>
+                        <div class="form-text">Tell us about your experience with our service. What problems did it solve for you?</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="testimonial-photo" class="form-label">Your Photo (Optional)</label>
+                        <input type="file" class="form-control" id="testimonial-photo">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Submit Testimonial</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Feature Request Modal -->
+<div class="modal fade" id="addFeatureRequestModal" tabindex="-1" aria-labelledby="addFeatureRequestModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addFeatureRequestModalLabel">Suggest a Feature</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="mb-3">
+                        <label for="feature-title" class="form-label">Feature Title</label>
+                        <input type="text" class="form-control" id="feature-title" placeholder="E.g., Image Recognition for Bots" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="feature-description" class="form-label">Description</label>
+                        <textarea class="form-control" id="feature-description" rows="4" placeholder="Describe your feature idea in detail..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="feature-use-case" class="form-label">Use Case</label>
+                        <textarea class="form-control" id="feature-use-case" rows="3" placeholder="How would this feature be used? What problem does it solve?"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary">Submit Feature Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Feature voting functionality
+        const voteButtons = document.querySelectorAll('.vote-button');
+        voteButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get the vote count element
+                const voteCountElement = this.nextElementSibling;
+                let voteCount = parseInt(voteCountElement.textContent);
+                
+                // Toggle voted state
+                if (this.classList.contains('btn-primary')) {
+                    // User is removing vote
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-outline-primary');
+                    voteCount--;
+                } else {
+                    // User is adding vote
+                    this.classList.remove('btn-outline-primary');
+                    this.classList.add('btn-primary');
+                    voteCount++;
+                }
+                
+                // Update vote count display
+                voteCountElement.textContent = voteCount;
+                
+                // In a real app, we would send this vote to the server
+                console.log('Vote updated. New count:', voteCount);
+            });
+        });
+    });
+</script>
+{% endblock %}

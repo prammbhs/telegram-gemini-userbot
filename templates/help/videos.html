@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}Video Tutorials - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('help_center') }}">Help Center</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Video Tutorials</li>
+                </ol>
+            </nav>
+            
+            <h1 class="display-5 fw-bold mb-3">Video Tutorials</h1>
+            <p class="lead">Learn how to use Telegram Gemini Bot through step-by-step video guides</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <!-- Video Categories -->
+            <div class="mb-5">
+                <ul class="nav nav-pills justify-content-center mb-4" id="videoTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="getting-started-tab" data-bs-toggle="pill" data-bs-target="#getting-started" type="button" role="tab" aria-controls="getting-started" aria-selected="true">Getting Started</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="advanced-tab" data-bs-toggle="pill" data-bs-target="#advanced" type="button" role="tab" aria-controls="advanced" aria-selected="false">Advanced Features</button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="troubleshooting-tab" data-bs-toggle="pill" data-bs-target="#troubleshooting" type="button" role="tab" aria-controls="troubleshooting" aria-selected="false">Troubleshooting</button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="videoTabsContent">
+                    <!-- Getting Started Videos -->
+                    <div class="tab-pane fade show active" id="getting-started" role="tabpanel" aria-labelledby="getting-started-tab">
+                        <div class="row g-4">
+                            <!-- Video 1 -->
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Creating Your First Bot" allowfullscreen></iframe>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Creating Your First Bot</h5>
+                                        <p class="card-text">Learn how to set up and configure your first AI-powered Telegram bot in just a few minutes.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="badge bg-primary">5:42</span>
+                                            <small class="text-muted">Updated: Mar 2025</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Video 2 -->
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Telegram Account Verification" allowfullscreen></iframe>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Telegram Account Verification</h5>
+                                        <p class="card-text">Step-by-step guide to verifying your Telegram account and connecting it to our platform securely.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="badge bg-primary">3:18</span>
+                                            <small class="text-muted">Updated: Feb 2025</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Advanced Features Videos -->
+                    <div class="tab-pane fade" id="advanced" role="tabpanel" aria-labelledby="advanced-tab">
+                        <div class="row g-4">
+                            <!-- Video 3 -->
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Mastering Learning Mode" allowfullscreen></iframe>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Mastering Learning Mode</h5>
+                                        <p class="card-text">Deep dive into the learning capabilities of your bots and how to optimize them for better conversations.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="badge bg-primary">7:14</span>
+                                            <small class="text-muted">Updated: Mar 2025</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Video 4 -->
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Advanced Analytics" allowfullscreen></iframe>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Advanced Analytics & Insights</h5>
+                                        <p class="card-text">Learn how to use the analytics dashboard to gain insights and improve your bot's performance over time.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="badge bg-primary">6:29</span>
+                                            <small class="text-muted">Updated: Jan 2025</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Troubleshooting Videos -->
+                    <div class="tab-pane fade" id="troubleshooting" role="tabpanel" aria-labelledby="troubleshooting-tab">
+                        <div class="row g-4">
+                            <!-- Video 5 -->
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Common Bot Issues" allowfullscreen></iframe>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">Resolving Common Bot Issues</h5>
+                                        <p class="card-text">Solutions to the most frequently encountered problems when running your Telegram bots.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="badge bg-primary">8:02</span>
+                                            <small class="text-muted">Updated: Feb 2025</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Video 6 -->
+                            <div class="col-md-6">
+                                <div class="card h-100 border-0 shadow-sm">
+                                    <div class="ratio ratio-16x9">
+                                        <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="API Key Troubleshooting" allowfullscreen></iframe>
+                                    </div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">API Key Troubleshooting</h5>
+                                        <p class="card-text">How to diagnose and fix issues with Gemini API keys and ensure your bots work smoothly.</p>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <span class="badge bg-primary">4:45</span>
+                                            <small class="text-muted">Updated: Mar 2025</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Request Video Section -->
+            <div class="text-center mt-5 pt-3">
+                <div class="card bg-light border-0 p-4">
+                    <div class="card-body">
+                        <h4 class="mb-3">Can't find what you're looking for?</h4>
+                        <p class="mb-4">Let us know what tutorial you'd like to see next and we'll consider it for our upcoming videos.</p>
+                        
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#requestVideoModal">
+                            <i class="bi bi-camera-video me-2"></i>Request a Tutorial
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Request Video Modal -->
+<div class="modal fade" id="requestVideoModal" tabindex="-1" aria-labelledby="requestVideoModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="requestVideoModalLabel">Request a Tutorial Video</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="videoRequestForm">
+                    <div class="mb-3">
+                        <label for="videoTopic" class="form-label">Tutorial Topic</label>
+                        <input type="text" class="form-control" id="videoTopic" placeholder="What would you like to learn about?" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="videoDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="videoDescription" rows="3" placeholder="Please describe what you'd like the tutorial to cover..." required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="userEmail" class="form-label">Your Email (optional)</label>
+                        <input type="email" class="form-control" id="userEmail" placeholder="We'll notify you when the video is available">
+                        <div class="form-text">We'll only use this email to notify you about the requested tutorial.</div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="submitVideoRequest">Submit Request</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle video request submission
+        const submitButton = document.getElementById('submitVideoRequest');
+        submitButton.addEventListener('click', function() {
+            const form = document.getElementById('videoRequestForm');
+            const topic = document.getElementById('videoTopic').value;
+            
+            if (topic) {
+                // In a real application, you would send this data to your server
+                alert('Thanks for your request! We\'ll consider creating a tutorial about: ' + topic);
+                
+                // Close the modal and reset form
+                const modal = bootstrap.Modal.getInstance(document.getElementById('requestVideoModal'));
+                modal.hide();
+                form.reset();
+            } else {
+                alert('Please enter a tutorial topic.');
+            }
+        });
+    });
+</script>
+{% endblock %}

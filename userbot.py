@@ -12,113 +12,128 @@ class GeminiUserbot:
         self.target_group = target_group
         self.duration = duration
         self.user_id = user_id
+        self.learning_enabled = True
+        self._is_running = False
         
-        # Initialize the telegram client (won't create TelegramClient yet)
-        self.telegram_client = TelegramUserbot(super_context, target_group, duration, user_id)
+        # We'll initialize these components during start()
+        self.telegram_client = None
+        self.ai_handler = None
         
-        # Get dynamic config for this user
-        config_instance = config.DynamicConfig(user_id)
-        
-        # Initialize AI with user-specific API key
-        self.ai = GeminiAI(super_context, api_key=config_instance.GEMINI_API_KEY)
-        
-        self.start_time = None
-        
-        # Connect the components with updated method bindings
-        self.telegram_client.generate_ai_response = self.generate_ai_response
-        self.telegram_client.generate_initial_message = self.generate_initial_message
+        # But prepare the configuration
+        self.config_instance = config.DynamicConfig(user_id)
     
     async def generate_ai_response(self, context, is_group_chat=True, message_id_to_reply=None):
-        """Generate AI response and pass chat type information"""
-        return await self.ai.generate_response(context, is_group_chat, message_id_to_reply)
+        """Generate response using the AI handler"""
+        if not self.ai_handler:
+            raise Exception("AI handler not initialized. Please start the bot first.")
+        
+        return await self.ai_handler.generate_response(context, is_group_chat, message_id_to_reply)
     
     async def generate_initial_message(self):
-        """Generate initial message with chat type awareness"""
-        # Get the chat type from the Telegram client
-        is_group_chat = self.telegram_client.is_group_chat
-        return await self.ai.generate_initial_message(is_group_chat)
+        """Generate an initial message to start the conversation"""
+        if not self.ai_handler:
+            raise Exception("AI handler not initialized. Please start the bot first.")
+        
+        # Use the is_group_chat property from telegram_client for context awareness
+        is_group = True
+        if hasattr(self.telegram_client, 'is_group_chat'):
+            is_group = self.telegram_client.is_group_chat
+
+        return await self.ai_handler.generate_initial_message(is_group_chat=is_group)
     
     async def start(self):
         """Start the userbot"""
-        self.start_time = time.time()
-        await self.telegram_client.start()
+        # Flag that we're running
+        self._is_running = True
+        
+        try:
+            # 1. Initialize AI handler first with user_id for API key
+            gemini_api_key = self.config_instance.GEMINI_API_KEY
+            if not gemini_api_key:
+                raise Exception("Gemini API key not configured. Please check your profile settings.")
+            
+            # Create AI handler with API key and verify it's valid
+            self.ai_handler = GeminiAI(
+                super_context=self.super_context,
+                api_key=gemini_api_key,
+                user_id=self.user_id  # Pass user_id for usage tracking
+            )
+            
+            # Verify API key is valid and check free tier status
+            if not self.ai_handler.api_key_valid:
+                if self.ai_handler.using_free_tier:
+                    print("WARNING: Using free tier but the house API key is invalid")
+                else:
+                    print("WARNING: Starting bot with invalid Gemini API key. Bot will use fallback responses.")
+            
+            # Set learning mode on AI handler
+            if hasattr(self.ai_handler, 'set_learning_enabled'):
+                self.ai_handler.set_learning_enabled(self.learning_enabled)
+            
+            # 2. Create and initialize the Telegram client
+            self.telegram_client = TelegramUserbot(
+                super_context=self.super_context,
+                target_group=self.target_group,
+                duration=self.duration,
+                user_id=self.user_id,
+                parent_bot=self  # Pass reference to self so client can access AI handler
+            )
+            
+            # 3. Start Telegram client
+            await self.telegram_client.start()
+            
+        except Exception as e:
+            self._is_running = False
+            print(f"Error starting GeminiUserbot: {e}")
+            raise
     
     async def stop(self):
         """Stop the userbot"""
-        try:
-            # Save session responses before stopping
-            log_file = self.ai.save_session_log()
-            print(f"Session responses saved to {log_file}")
-            
-            # Get and print session analytics
-            analytics = self.get_session_analytics()
-            print("\n===== SESSION ANALYTICS =====")
-            for key, value in analytics.items():
-                if key == 'response_types' or key == 'top_topics':
-                    print(f"{key}: {value}")
-                else:
-                    print(f"{key}: {value}")
-            print("============================\n")
-            
-            # Reset memory
-            self.ai.message_fingerprints.clear()
-            self.ai.question_history.clear()
-            self.ai.greeting_counts.clear()
-            self.ai.topic_history = [self.super_context]
-        except Exception as e:
-            print(f"Error during analytics processing: {e}")
+        self._is_running = False
         
-        # Always stop the telegram client
-        await self.telegram_client.stop()
+        # Stop the Telegram client
+        if self.telegram_client:
+            await self.telegram_client.stop()
+        
+        # Save AI session logs if enabled
+        if self.ai_handler and self.learning_enabled:
+            try:
+                self.ai_handler.save_session_log()
+            except Exception as e:
+                print(f"Error saving AI session log: {e}")
     
     async def add_resource(self, resource_path, description=None):
-        """Add a resource file or URL to be used for answering questions"""
-        try:
-            result = await self.ai.add_resource(resource_path, description)
-            return True, result
-        except Exception as e:
-            return False, str(e)
+        """Add a resource for the AI handler to use"""
+        if not self.ai_handler:
+            raise Exception("AI handler not initialized. Please start the bot first.")
+        return await self.ai_handler.add_resource(resource_path, description)
     
     def get_resources(self):
-        """Get list of all added resources"""
-        return self.ai.get_resources()
+        """Get list of resources available to the bot"""
+        if not self.ai_handler:
+            return []
+        return self.ai_handler.document_handler.get_resources() if hasattr(self.ai_handler, 'document_handler') else []
     
     def get_session_analytics(self):
         """Get analytics about the current session"""
-        analytics = self.ai.get_session_analytics()
-        
-        # Add default values for any missing keys
-        default_analytics = {
-            'session_duration_minutes': 0,
-            'total_responses': 0,
-            'average_words_per_response': 0,
-            'emoji_usage_percentage': 0,
-            'unique_users_engaged': 0,
-            'response_types': {},
-            'top_topics': [],
-            'users': []
-        }
-        
-        # Calculate session duration
-        if self.start_time:
-            elapsed_seconds = time.time() - self.start_time
-            default_analytics['session_duration_minutes'] = round(elapsed_seconds / 60, 1)
-        
-        # Merge default with actual analytics, ensuring all keys exist
-        for key, value in default_analytics.items():
-            if key not in analytics:
-                analytics[key] = value
-                
-        return analytics
+        if not self.ai_handler:
+            return {"status": "Bot not initialized", "total_responses": 0}
+        return self.ai_handler.get_session_analytics()
     
     def set_learning_enabled(self, enabled=True):
-        """Enable or disable learning from past responses"""
-        self.ai.use_learning = enabled
+        """Enable or disable learning"""
+        self.learning_enabled = enabled
+        
+        # Update AI handler if already initialized
+        if self.ai_handler and hasattr(self.ai_handler, 'set_learning_enabled'):
+            self.ai_handler.set_learning_enabled(enabled)
     
     def learn_from_past_logs(self):
-        """Process all previous logs to learn response patterns"""
-        return self.ai.learn_from_past_logs()
+        """Learn from past conversation logs"""
+        if not self.ai_handler:
+            return 0
+        return self.ai_handler.learn_from_past_logs()
     
     def get_learning_stats(self):
         """Get statistics about what has been learned"""
-        return self.ai.get_learning_stats()
+        return self.ai_handler.get_learning_stats()

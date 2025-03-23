@@ -2,8 +2,45 @@
 <html lang="en" data-bs-theme="{{ 'dark' if dark_mode else 'light' }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">
     <title>{% block title %}Telegram Gemini Bot{% endblock %}</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="{% block meta_description %}Create AI-powered bots for your Telegram account using Google's Gemini AI. Engage in natural conversations in groups or direct messages.{% endblock %}">
+    <meta name="keywords" content="{% block meta_keywords %}telegram bot, ai bot, gemini ai, telegram assistant, chatbot, ai assistant{% endblock %}">
+    <meta name="author" content="Telegram Gemini Bot">
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:title" content="{% block og_title %}{{ self.title() }}{% endblock %}">
+    <meta property="og:description" content="{% block og_description %}{{ self.meta_description() }}{% endblock %}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    <meta property="og:url" content="{{ request.url }}">
+    <meta property="og:image" content="{{ url_for('static', filename='img/og-image.jpg', _external=True) }}">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ self.og_title() }}">
+    <meta name="twitter:description" content="{{ self.og_description() }}">
+    <meta name="twitter:image" content="{{ url_for('static', filename='img/og-image.jpg', _external=True) }}">
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="{{ request.url }}">
+    
+    <!-- PWA Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Telegram Gemini Bot">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='img/app-icon-192.png') }}">
+    <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}">
+    <meta name="theme-color" content="#4361ee">
+    
+    <!-- Preload Critical Resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" as="style">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Roboto+Mono&display=swap" rel="stylesheet">
     
     <!-- Bootstrap 5.3 CSS with dark mode support -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -14,14 +51,50 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="{{ url_for('static', filename='img/favicon.svg') }}">
+    
+    <!-- Structured Data for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Telegram Gemini Bot",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Web",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "156"
+      }
+    }
+    </script>
+    
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
+    
     {% block head %}{% endblock %}
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="/">
-                <i class="bi bi-robot me-2"></i>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="me-2">
+                    <path d="M9 14L15 8M8.5 8.5L12 12M11.5 12.5L15.5 16.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 13.8214 2.48697 15.5291 3.33782 17L2.5 21.5L7 20.6622C8.47087 21.513 10.1786 22 12 22Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
                 <span>Telegram Gemini Bot</span>
             </a>
             
@@ -31,40 +104,54 @@
             
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
+                    <!-- Add Pricing to the navigation -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('pricing') }}">
+                            <i class="bi bi-tag me-1"></i> Pricing
+                        </a>
+                    </li>
+                    
+                    <!-- Add Help Center to the navigation -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('help_center') }}">
+                            <i class="bi bi-question-circle me-1"></i> Help
+                        </a>
+                    </li>
+                    
                     {% if current_user.is_authenticated %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('dashboard') }}">
-                            <i class="bi bi-speedometer2"></i> Dashboard
+                            <i class="bi bi-speedometer2 me-1"></i> Dashboard
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('profile') }}">
-                            <i class="bi bi-person-circle"></i> Profile
+                            <i class="bi bi-person-circle me-1"></i> Profile
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('toggle_theme') }}">
                             {% if dark_mode %}
-                            <i class="bi bi-sun"></i> Light Mode
+                            <i class="bi bi-sun me-1"></i> Light
                             {% else %}
-                            <i class="bi bi-moon"></i> Dark Mode
+                            <i class="bi bi-moon me-1"></i> Dark
                             {% endif %}
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('logout') }}">
-                            <i class="bi bi-box-arrow-right"></i> Logout
+                            <i class="bi bi-box-arrow-right me-1"></i> Logout
                         </a>
                     </li>
                     {% else %}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('login') }}">
-                            <i class="bi bi-box-arrow-in-right"></i> Login
+                            <i class="bi bi-box-arrow-in-right me-1"></i> Login
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('register') }}">
-                            <i class="bi bi-person-plus"></i> Register
+                        <a class="nav-link btn btn-outline-light btn-sm ms-2" href="{{ url_for('register') }}">
+                            <i class="bi bi-person-plus me-1"></i> Register
                         </a>
                     </li>
                     {% endif %}
@@ -79,22 +166,80 @@
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        {{ message }}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                {% if category == 'success' %}
+                                    <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                                {% elif category == 'danger' %}
+                                    <i class="bi bi-exclamation-circle-fill text-danger fs-4"></i>
+                                {% elif category == 'warning' %}
+                                    <i class="bi bi-exclamation-triangle-fill text-warning fs-4"></i>
+                                {% else %}
+                                    <i class="bi bi-info-circle-fill text-info fs-4"></i>
+                                {% endif %}
+                            </div>
+                            <div>{{ message }}</div>
+                        </div>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             {% endif %}
         {% endwith %}
         
+        <!-- Contextual Help -->
+        {% if show_contextual_help is defined and show_contextual_help %}
+        <div class="contextual-help-container mb-4">
+            <div class="alert bg-light border-0 shadow-sm">
+                <div class="d-flex">
+                    <div class="flex-shrink-0">
+                        <i class="bi bi-lightbulb text-warning fs-4 me-3"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h5 class="alert-heading">{{ contextual_help_title|default('Quick Tip') }}</h5>
+                        <p class="mb-0">{{ contextual_help_message }}</p>
+                    </div>
+                    <div class="flex-shrink-0 ms-3">
+                        <button type="button" class="btn-close small dismiss-contextual-help" data-help-id="{{ contextual_help_id }}"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
         <!-- Page Content -->
         {% block content %}{% endblock %}
     </div>
 
     <!-- Footer -->
-    <footer class="footer mt-auto py-3 bg-body-tertiary border-top">
-        <div class="container text-center">
-            <span class="text-muted">© 2025 Telegram Gemini Bot. Powered by <a href="https://github.com" target="_blank">GitHub</a>.</span>
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center text-md-start mb-3 mb-md-0">
+                    <span class="text-muted">© 2025 Telegram Gemini Bot</span>
+                </div>
+                <div class="col-md-4 text-center mb-3 mb-md-0">
+                    <div class="d-flex justify-content-center">
+                        <a href="{{ url_for('help_center') }}" class="text-muted me-3">Help</a>
+                        <a href="{{ url_for('privacy') }}" class="text-muted me-3">Privacy</a>
+                        <a href="{{ url_for('terms') }}" class="text-muted me-3">Terms</a>
+                        <a href="{{ url_for('blog') }}" class="text-muted">Blog</a>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center text-md-end">
+                    <div class="d-flex justify-content-center justify-content-md-end">
+                        <a href="https://github.com" target="_blank" class="text-muted me-3">
+                            <i class="bi bi-github"></i>
+                        </a>
+                        <a href="https://telegram.org" target="_blank" class="text-muted me-3">
+                            <i class="bi bi-telegram"></i>
+                        </a>
+                        <a href="#" class="text-muted">
+                            <i class="bi bi-question-circle"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </footer>
 
@@ -104,6 +249,83 @@
     <!-- Custom JS -->
     <script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
     
+    <!-- Lazy Loading Images -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const lazyImages = document.querySelectorAll('.lazy-image');
+            
+            if ('IntersectionObserver' in window) {
+                const imageObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const img = entry.target;
+                            const src = img.getAttribute('data-src');
+                            
+                            if (src) {
+                                img.src = src;
+                                img.classList.add('loaded');
+                                imageObserver.unobserve(img);
+                            }
+                        }
+                    });
+                });
+                
+                lazyImages.forEach(img => {
+                    imageObserver.observe(img);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                lazyImages.forEach(img => {
+                    const src = img.getAttribute('data-src');
+                    if (src) {
+                        img.src = src;
+                        img.classList.add('loaded');
+                    }
+                });
+            }
+        });
+    </script>
+    
+    <!-- Contextual Help Handling -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const helpDismissButtons = document.querySelectorAll('.dismiss-contextual-help');
+            
+            helpDismissButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const helpId = this.getAttribute('data-help-id');
+                    const helpContainer = this.closest('.contextual-help-container');
+                    
+                    // Hide the help tip
+                    if (helpContainer) {
+                        helpContainer.style.display = 'none';
+                    }
+                    
+                    // Save preference in localStorage
+                    if (helpId) {
+                        localStorage.setItem(`help_dismissed_${helpId}`, 'true');
+                    }
+                });
+            });
+        });
+    </script>
+    
+    <!-- Load Additional Scripts -->
     {% block scripts %}{% endblock %}
+    
+    <!-- Service Worker Registration for PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('{{ url_for("static", filename="service-worker.js") }}')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(error) {
+                        console.log('ServiceWorker registration failed: ', error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>

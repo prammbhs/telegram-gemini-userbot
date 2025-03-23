@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Verify Telegram - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card shadow border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0"><i class="bi bi-telegram me-2"></i>Verify Telegram Account</h4>
+                    <a href="{{ url_for('profile') }}" class="btn btn-sm btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> Back to Profile
+                    </a>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                {% if is_authenticated %}
+                <div class="alert alert-success mb-4">
+                    <i class="bi bi-check-circle-fill me-2"></i>
+                    <strong>Your Telegram account is authenticated!</strong>
+                    <p class="mb-0">You can start bots and send messages using your Telegram account.</p>
+                </div>
+                {% endif %}
+                
+                <div class="row">
+                    <div class="col-md-7">
+                        <h5 class="border-bottom pb-2 mb-4">Connect to Telegram</h5>
+                        
+                        <form method="POST" action="{{ url_for('verify_telegram') }}">
+                            <div class="mb-3">
+                                <label class="form-label">Phone Number with Country Code</label>
+                                <div class="row g-0">
+                                    <div class="col-4 col-sm-3">
+                                        <select class="form-select" id="country_code" name="country_code">
+                                            <option value="">Select...</option>
+                                            <option value="+1" {% if existing.country_code == '+1' %}selected{% endif %}>+1 (US/CA)</option>
+                                            <option value="+44" {% if existing.country_code == '+44' %}selected{% endif %}>+44 (UK)</option>
+                                            <option value="+91" {% if existing.country_code == '+91' %}selected{% endif %}>+91 (IN)</option>
+                                            <option value="+49" {% if existing.country_code == '+49' %}selected{% endif %}>+49 (DE)</option>
+                                            <option value="+33" {% if existing.country_code == '+33' %}selected{% endif %}>+33 (FR)</option>
+                                            <option value="+61" {% if existing.country_code == '+61' %}selected{% endif %}>+61 (AU)</option>
+                                            <option value="+7" {% if existing.country_code == '+7' %}selected{% endif %}>+7 (RU)</option>
+                                            <option value="+86" {% if existing.country_code == '+86' %}selected{% endif %}>+86 (CN)</option>
+                                            <option value="+81" {% if existing.country_code == '+81' %}selected{% endif %}>+81 (JP)</option>
+                                            <option value="+82" {% if existing.country_code == '+82' %}selected{% endif %}>+82 (KR)</option>
+                                            <option value="+55" {% if existing.country_code == '+55' %}selected{% endif %}>+55 (BR)</option>
+                                            <option value="+52" {% if existing.country_code == '+52' %}selected{% endif %}>+52 (MX)</option>
+                                            <option value="+971" {% if existing.country_code == '+971' %}selected{% endif %}>+971 (AE)</option>
+                                            <option value="+966" {% if existing.country_code == '+966' %}selected{% endif %}>+966 (SA)</option>
+                                            <option value="+65" {% if existing.country_code == '+65' %}selected{% endif %}>+65 (SG)</option>
+                                            <option value="+34" {% if existing.country_code == '+34' %}selected{% endif %}>+34 (ES)</option>
+                                            <option value="+39" {% if existing.country_code == '+39' %}selected{% endif %}>+39 (IT)</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-8 col-sm-9">
+                                        <input type="text" class="form-control" id="phone_number" name="phone_number" 
+                                               placeholder="123456789" value="{{ existing.local_number }}" required>
+                                    </div>
+                                </div>
+                                <div class="form-text">
+                                    Select your country code and enter your phone number without the country code prefix.
+                                </div>
+                            </div>
+                            
+                            <div class="alert alert-warning">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                <strong>Important:</strong>
+                                <p class="mb-0">This will send a verification code to your Telegram app. You'll need to check your Telegram messages after submitting.</p>
+                            </div>
+                            
+                            <div class="d-grid mt-4">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-telegram me-2"></i>{% if is_authenticated %}Re-authenticate{% else %}Verify Telegram Account{% endif %}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <div class="col-md-5">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h5 class="card-title"><i class="bi bi-info-circle me-2"></i>Why verify with Telegram?</h5>
+                                <p>Verification allows the bot to send messages using your Telegram account. This is required for the bot to function.</p>
+                                
+                                <h6 class="mt-4">How it works:</h6>
+                                <ol class="ps-3">
+                                    <li>Enter your phone number used with Telegram</li>
+                                    <li>Telegram will send a verification code to your app</li>
+                                    <li>Enter the code on the next screen</li>
+                                    <li>Your session will be saved securely for future use</li>
+                                </ol>
+                                
+                                <div class="mt-4">
+                                    <h6>Security Note:</h6>
+                                    <p class="small">Your phone number is stored securely and only used to authenticate with Telegram. We never share your data with third parties.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Password toggle functionality
+        document.querySelectorAll('.toggle-password').forEach(button => {
+            button.addEventListener('click', function() {
+                const targetId = this.getAttribute('data-target');
+                const passwordField = document.querySelector(targetId);
+                const icon = this.querySelector('i');
+                
+                if (passwordField.type === 'password') {
+                    passwordField.type = 'text';
+                    icon.classList.remove('bi-eye');
+                    icon.classList.add('bi-eye-slash');
+                } else {
+                    passwordField.type = 'password';
+                    icon.classList.remove('bi-eye-slash');
+                    icon.classList.add('bi-eye');
+                }
+            });
+        });
+
+        // Enhance the phone number input with proper formatting
+        const phoneInput = document.getElementById('phone_number');
+        phoneInput.addEventListener('input', function(e) {
+            // Remove any non-digit characters
+            let value = this.value.replace(/\D/g, '');
+            
+            // Apply formatting (optional, customize for your needs)
+            // For example, format as: XXX-XXX-XXXX for US numbers
+            if (value.length > 3 && value.length <= 6) {
+                value = value.slice(0, 3) + '-' + value.slice(3);
+            } else if (value.length > 6) {
+                value = value.slice(0, 3) + '-' + value.slice(3, 6) + '-' + value.slice(6, 10);
+            }
+            
+            this.value = value;
+        });
+        
+        // Validate country code is selected before submitting
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const countryCode = document.getElementById('country_code').value;
+            if (!countryCode) {
+                e.preventDefault();
+                alert('Please select a country code');
+                return false;
+            }
+        });
+    });
+</script>
+{% endblock %}

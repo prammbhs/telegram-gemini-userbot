@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}Troubleshooting - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('help_center') }}">Help Center</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Troubleshooting</li>
+                </ol>
+            </nav>
+            
+            <h1 class="display-5 fw-bold mb-3">Troubleshooting Guide</h1>
+            <p class="lead">Solutions to common issues with Telegram Gemini Bot</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <div class="card sticky-top" style="top: 1rem;">
+                <div class="card-header bg-light">
+                    <h5 class="mb-0">Common Issues</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush">
+                        <a href="#bot-not-responding" class="list-group-item list-group-item-action">Bot Not Responding</a>
+                        <a href="#api-key-errors" class="list-group-item list-group-item-action">API Key Errors</a>
+                        <a href="#telegram-verification" class="list-group-item list-group-item-action">Telegram Verification Issues</a>
+                        <a href="#connection-problems" class="list-group-item list-group-item-action">Connection Problems</a>
+                        <a href="#bot-performance" class="list-group-item list-group-item-action">Bot Performance Issues</a>
+                        <a href="#billing" class="list-group-item list-group-item-action">Billing & Subscription Issues</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <section id="bot-not-responding" class="mb-5">
+                        <h2 class="border-bottom pb-2 mb-4">Bot Not Responding</h2>
+                        
+                        <div class="alert alert-info mb-4">
+                            <i class="bi bi-info-circle-fill me-2"></i>
+                            <strong>Symptom:</strong> Your bot is online but doesn't respond to messages in the Telegram group or chat.
+                        </div>
+                        
+                        <h4 class="mb-3">Checklist</h4>
+                        <div class="card mb-4">
+                            <div class="card-body">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="check1">
+                                    <label class="form-check-label" for="check1">
+                                        Verify the bot shows as "Active" on your dashboard
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="check2">
+                                    <label class="form-check-label" for="check2">
+                                        Check that your Telegram account is properly verified
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="check3">
+                                    <label class="form-check-label" for="check3">
+                                        Confirm your Gemini API key is valid
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="check4">
+                                    <label class="form-check-label" for="check4">
+                                        Verify the target group/chat name or ID is correct
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="check5">
+                                    <label class="form-check-label" for="check5">
+                                        Check if you've exceeded your API usage limits
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <h4 class="mb-3">Common Solutions</h4>
+                        
+                        <div class="accordion mb-4" id="solutionsAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#solution1">
+                                        Restart the Bot
+                                    </button>
+                                </h2>
+                                <div id="solution1" class="accordion-collapse collapse" data-bs-parent="#solutionsAccordion">
+                                    <div class="accordion-body">
+                                        <p>Sometimes, simply stopping and restarting the bot can resolve connectivity issues:</p>
+                                        <ol>
+                                            <li>Go to your Dashboard</li>
+                                            <li>Find the bot and click "Stop"</li>
+                                            <li>Wait 30 seconds</li>
+                                            <li>Click "Start" to restart the bot</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#solution2">
+                                        Verify Target Group Settings
+                                    </button>
+                                </h2>
+                                <div id="solution2" class="accordion-collapse collapse" data-bs-parent="#solutionsAccordion">
+                                    <div class="accordion-body">
+                                        <p>The way you specify the target group matters:</p>
+                                        <ul>
+                                            <li>For public groups, use the format <code>@groupname</code> (with the @ symbol)</li>
+                                            <li>For private groups, use the exact group name</li>
+                                            <li>For direct chats, use the username (without @) or phone number</li>
+                                            <li>You can also use chat IDs for any type (e.g., <code>-1001234567890</code>)</li>
+                                        </ul>
+                                        <p>Edit your bot settings to ensure you're using the correct format.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#solution3">
+                                        Check Telegram Session Status
+                                    </button>
+                                </h2>
+                                <div id="solution3" class="accordion-collapse collapse" data-bs-parent="#solutionsAccordion">
+                                    <div class="accordion-body">
+                                        <p>Your Telegram session might have expired or been terminated:</p>
+                                        <ol>
+                                            <li>Go to your Profile page</li>
+                                            <li>Under "Telegram Verification", click "Re-verify"</li>
+                                            <li>Follow the steps to verify your account again</li>
+                                            <li>Try starting your bot again</li>
+                                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-warning">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            <strong>Warning:</strong> If you're using multiple devices with Telegram, logging in elsewhere might terminate your current bot session.
+                        </div>
+                    </section>
+                    
+                    <!-- Additional troubleshooting sections would follow a similar pattern -->
+                    <section id="api-key-errors" class="mb-5">
+                        <!-- Content for API key errors troubleshooting -->
+                        <h2 class="border-bottom pb-2 mb-4">API Key Errors</h2>
+                        <!-- More content here -->
+                    </section>
+                
+                    <!-- More troubleshooting sections -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active state in the navigation
+                    document.querySelectorAll('#guide-list a').forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+        
+        // Update active section based on scroll position
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section[id]');
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                
+                if (window.scrollY >= sectionTop - 100 && window.scrollY < sectionTop + sectionHeight - 100) {
+                    const currentId = section.getAttribute('id');
+                    document.querySelectorAll('#guide-list a').forEach(item => {
+                        item.classList.remove('active');
+                        if (item.getAttribute('href') === `#${currentId}`) {
+                            item.classList.add('active');
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

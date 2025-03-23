@@ -121,4 +121,103 @@
         </div>
     </div>
 </div>
+
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row justify-content-center mb-5">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">Try It Yourself</h2>
+                <p class="lead">See how our AI-powered Telegram bot responds in real conversations</p>
+            </div>
+        </div>
+        
+        <!-- Interactive Demo -->
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-primary text-white py-3">
+                        <div class="d-flex align-items-center">
+                            <img src="{{ url_for('static', filename='img/demo-avatar.jpg') }}" class="rounded-circle me-2" width="40" height="40" alt="Bot Avatar">
+                            <h5 class="mb-0">TechExpert Bot</h5>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="demo-chat-container p-3" style="height: 400px; overflow-y: auto;">
+                            <!-- Demo Messages Container -->
+                            <div id="demo-messages">
+                                <div class="message bot-message mb-3">
+                                    <div class="message-content">
+                                        Hi there! I'm TechExpert, your AI assistant for technology questions. How can I help you today?
+                                    </div>
+                                    <div class="message-time text-muted">Just now</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Demo Input -->
+                        <div class="demo-input-container p-3 border-top">
+                            <form id="demo-form" class="d-flex">
+                                <input type="text" id="demo-message" class="form-control me-2" placeholder="Ask something about technology...">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-send"></i>
+                                </button>
+                            </form>
+                            
+                            <!-- Sample Questions -->
+                            <div class="sample-questions mt-3">
+                                <p class="text-muted mb-2"><small>Try asking:</small></p>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <button class="btn btn-sm btn-outline-secondary sample-question">What is blockchain?</button>
+                                    <button class="btn btn-sm btn-outline-secondary sample-question">Explain cloud computing</button>
+                                    <button class="btn btn-sm btn-outline-secondary sample-question">How does AI work?</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">
+                        <i class="bi bi-rocket-takeoff me-2"></i>Create Your Bot Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section with Counters -->
+<section class="py-5 bg-gradient-primary text-white">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="stat-item">
+                    <div class="stat-icon mb-2">
+                        <i class="bi bi-robot" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <div class="stat-value counter mb-2" data-target="5782" data-duration="2000">0</div>
+                    <div class="stat-label">Bots Created</div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4 mb-md-0">
+                <div class="stat-item">
+                    <div class="stat-icon mb-2">
+                        <i class="bi bi-chat-text" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <div class="stat-value counter mb-2" data-target="1423500" data-duration="2500">0</div>
+                    <div class="stat-label">Messages Processed</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-item">
+                    <div class="stat-icon mb-2">
+                        <i class="bi bi-people" style="font-size: 2.5rem;"></i>
+                    </div>
+                    <div class="stat-value counter mb-2" data-target="12438" data-duration="2200">0</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 {% endblock %}

@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Support - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('help_center') }}">Help Center</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Contact Support</li>
+                </ol>
+            </nav>
+            
+            <h1 class="display-5 fw-bold mb-3">Contact Support</h1>
+            <p class="lead">Get help from our support team. We're here to assist you.</p>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <form id="supportForm">
+                        <div class="mb-4">
+                            <label for="support-name" class="form-label">Your Name</label>
+                            <input type="text" class="form-control" id="support-name" required>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="support-email" class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="support-email" required>
+                            <div class="form-text">We'll never share your email with anyone else.</div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="support-category" class="form-label">What do you need help with?</label>
+                            <select class="form-select" id="support-category" required>
+                                <option value="" selected disabled>Select a category</option>
+                                <option value="account">Account Issues</option>
+                                <option value="billing">Billing & Subscription</option>
+                                <option value="technical">Technical Problem</option>
+                                <option value="feature">Feature Request</option>
+                                <option value="other">Other</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label for="support-message" class="form-label">Message</label>
+                            <textarea class="form-control" id="support-message" rows="5" required placeholder="Please describe your issue in detail..."></textarea>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="support-attachment">
+                                <label class="form-check-label" for="support-attachment">
+                                    I want to attach a file (screenshot, log, etc.)
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="attachment-container mb-4" style="display: none;">
+                            <label for="support-file" class="form-label">Attachment</label>
+                            <input class="form-control" type="file" id="support-file">
+                        </div>
+                        
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="bi bi-send me-2"></i>Submit Support Request
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card bg-light border-0 p-4 mb-4">
+                <div class="card-body">
+                    <h4 class="mb-3">Support Hours</h4>
+                    <p>Our support team is available to assist you during the following hours:</p>
+                    <ul class="mb-0">
+                        <li>Monday - Friday: 9:00 AM - 6:00 PM EST</li>
+                        <li>Saturday: 10:00 AM - 2:00 PM EST</li>
+                        <li>Sunday: Closed</li>
+                    </ul>
+                    <p class="mt-3 mb-0">Premium subscribers receive priority support with extended hours.</p>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h4 class="mb-3">Need immediate assistance?</h4>
+                <p>Check our <a href="{{ url_for('help_faq') }}">Frequently Asked Questions</a> or <a href="{{ url_for('help_troubleshooting') }}">Troubleshooting Guide</a> for quick solutions to common issues.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Handle attachment checkbox
+        const attachmentCheckbox = document.getElementById('support-attachment');
+        const attachmentContainer = document.querySelector('.attachment-container');
+        
+        attachmentCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                attachmentContainer.style.display = 'block';
+            } else {
+                attachmentContainer.style.display = 'none';
+            }
+        });
+        
+        // Handle form submission
+        const supportForm = document.getElementById('supportForm');
+        supportForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // In a real app, we would submit this data to a backend
+            alert('Thanks for your message! Our support team will contact you shortly.');
+            
+            // Reset the form
+            supportForm.reset();
+            attachmentContainer.style.display = 'none';
+        });
+    });
+</script>
+{% endblock %}

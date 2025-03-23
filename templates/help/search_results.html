@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{{ url_for('help_center') }}">Help Center</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Search Results</li>
+                </ol>
+            </nav>
+            
+            <h1 class="display-5 fw-bold mb-3">Search Results</h1>
+            <p class="lead">Results for "{{ query }}"</p>
+            
+            <div class="input-group input-group-lg mb-4">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" class="form-control border-start-0" id="helpSearch" value="{{ query }}" placeholder="Search help articles...">
+                <button class="btn btn-primary" id="searchButton">Search</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <!-- In a real app, these would be dynamically generated search results -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Search Results (3 found)</h5>
+                    
+                    <div class="list-group mt-4">
+                        <a href="{{ url_for('help_article', article='telegram-verification') }}" class="list-group-item list-group-item-action border-0 rounded mb-3 shadow-sm">
+                            <h5 class="mb-1">How to verify your Telegram account</h5>
+                            <p class="mb-1 text-truncate">A step-by-step guide to verifying your Telegram account for use with our bots. Learn how to connect your personal Telegram account to our platform.</p>
+                            <small class="text-muted">Last updated: 2 weeks ago</small>
+                        </a>
+                        
+                        <a href="{{ url_for('help_article', article='api-keys') }}" class="list-group-item list-group-item-action border-0 rounded mb-3 shadow-sm">
+                            <h5 class="mb-1">Managing your API keys</h5>
+                            <p class="mb-1 text-truncate">Learn how to add, remove, and manage Google Gemini API keys in your account settings. Includes information on free tier credits and usage limits.</p>
+                            <small class="text-muted">Last updated: 3 days ago</small>
+                        </a>
+                        
+                        <a href="{{ url_for('help_faq') }}" class="list-group-item list-group-item-action border-0 rounded mb-3 shadow-sm">
+                            <h5 class="mb-1">Frequently Asked Questions</h5>
+                            <p class="mb-1 text-truncate">Find answers to common questions about our service, including account setup, billing, and technical details.</p>
+                            <small class="text-muted">Last updated: 1 week ago</small>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <h4>Can't find what you're looking for?</h4>
+                <p class="mb-4">Our support team is ready to help you with any other questions you might have.</p>
+                <a href="{{ url_for('help_contact') }}" class="btn btn-primary">
+                    <i class="bi bi-headset me-2"></i>Contact Support
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.getElementById('helpSearch');
+        const searchButton = document.getElementById('searchButton');
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                window.location.href = "{{ url_for('help_search') }}?q=" + encodeURIComponent(searchTerm);
+            }
+        }
+        
+        if (searchInput && searchButton) {
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+            
+            searchButton.addEventListener('click', performSearch);
+        }
+    });
+</script>
+{% endblock %}

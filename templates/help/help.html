@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Help Center - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-12 text-center">
+            <h1 class="display-4 fw-bold mb-3">Help Center</h1>
+            <p class="lead">Find answers to your questions and learn how to get the most out of Telegram Gemini Bot</p>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-lg-8 mx-auto">
+            <div class="input-group input-group-lg mb-4">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" class="form-control border-start-0" id="helpSearch" placeholder="Search help articles...">
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Getting Started -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="icon-container mb-3">
+                        <div class="icon-circle bg-primary-subtle">
+                            <i class="bi bi-rocket-takeoff text-primary" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Getting Started</h4>
+                    <p class="card-text">Learn the basics and set up your first AI bot in minutes</p>
+                    <a href="{{ url_for('help_getting_started') }}" class="btn btn-outline-primary mt-2">
+                        View Guides
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAQs -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="icon-container mb-3">
+                        <div class="icon-circle bg-info-subtle">
+                            <i class="bi bi-question-circle text-info" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Frequently Asked Questions</h4>
+                    <p class="card-text">Find answers to common questions about our service</p>
+                    <a href="{{ url_for('help_faq') }}" class="btn btn-outline-info mt-2">
+                        View FAQs
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Troubleshooting -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="icon-container mb-3">
+                        <div class="icon-circle bg-warning-subtle">
+                            <i class="bi bi-tools text-warning" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Troubleshooting</h4>
+                    <p class="card-text">Solutions to common issues and error messages</p>
+                    <a href="{{ url_for('help_troubleshooting') }}" class="btn btn-outline-warning mt-2">
+                        View Solutions
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Documentation -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="icon-container mb-3">
+                        <div class="icon-circle bg-success-subtle">
+                            <i class="bi bi-code-square text-success" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <h4 class="card-title">API Documentation</h4>
+                    <p class="card-text">Technical documentation for developers</p>
+                    <a href="{{ url_for('help_api') }}" class="btn btn-outline-success mt-2">
+                        View API Docs
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Video Tutorials -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="icon-container mb-3">
+                        <div class="icon-circle bg-danger-subtle">
+                            <i class="bi bi-play-btn text-danger" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Video Tutorials</h4>
+                    <p class="card-text">Step-by-step video guides for visual learners</p>
+                    <a href="{{ url_for('help_videos') }}" class="btn btn-outline-danger mt-2">
+                        Watch Videos
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Support -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 border-0 shadow-sm hover-card">
+                <div class="card-body text-center p-4">
+                    <div class="icon-container mb-3">
+                        <div class="icon-circle bg-secondary-subtle">
+                            <i class="bi bi-headset text-secondary" style="font-size: 2rem;"></i>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Contact Support</h4>
+                    <p class="card-text">Can't find what you need? Reach out to our team</p>
+                    <a href="{{ url_for('help_contact') }}" class="btn btn-outline-secondary mt-2">
+                        Contact Us
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-lg-8 mx-auto">
+            <div class="card bg-light border-0 p-4">
+                <div class="card-body">
+                    <h4 class="mb-3">Popular Articles</h4>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item bg-transparent px-0 border-0 py-2">
+                            <a href="{{ url_for('help_article', article='telegram-verification') }}" class="d-flex align-items-center text-decoration-none">
+                                <i class="bi bi-file-earmark-text me-3 text-primary"></i>
+                                <span>How to verify your Telegram account</span>
+                                <span class="badge bg-primary ms-auto">Most viewed</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent px-0 py-2">
+                            <a href="{{ url_for('help_article', article='bot-creation') }}" class="d-flex align-items-center text-decoration-none">
+                                <i class="bi bi-file-earmark-text me-3 text-primary"></i>
+                                <span>Creating your first AI bot</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent px-0 py-2">
+                            <a href="{{ url_for('help_article', article='api-keys') }}" class="d-flex align-items-center text-decoration-none">
+                                <i class="bi bi-file-earmark-text me-3 text-primary"></i>
+                                <span>Managing your API keys</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent px-0 py-2">
+                            <a href="{{ url_for('help_article', article='bot-not-responding') }}" class="d-flex align-items-center text-decoration-none">
+                                <i class="bi bi-file-earmark-text me-3 text-primary"></i>
+                                <span>What to do if your bot isn't responding</span>
+                            </a>
+                        </li>
+                        <li class="list-group-item bg-transparent px-0 py-2">
+                            <a href="{{ url_for('help_article', article='learning-mode') }}" class="d-flex align-items-center text-decoration-none">
+                                <i class="bi bi-file-earmark-text me-3 text-primary"></i>
+                                <span>Understanding the Learning Mode feature</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Help search functionality
+        const searchInput = document.getElementById('helpSearch');
+        if (searchInput) {
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    const searchTerm = this.value.trim();
+                    if (searchTerm) {
+                        window.location.href = "{{ url_for('help_search') }}?q=" + encodeURIComponent(searchTerm);
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
