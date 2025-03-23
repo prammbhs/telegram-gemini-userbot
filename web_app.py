@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, abort
 from flask_pymongo import PyMongo
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
@@ -8,6 +8,7 @@ import os
 import json
 import asyncio
 import threading
+import sys
 from authlib.integrations.flask_client import OAuth
 from dotenv import load_dotenv
 import config
@@ -21,9 +22,24 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
 
-# MongoDB setup
-app.config['MONGO_URI'] = os.environ.get('MONGO_URI', 'mongodb://localhost:27017/telegrambotdb')
+# MongoDB setup with error handling
+mongo_uri = os.environ.get('MONGO_URI')
+if not mongo_uri:
+    print("ERROR: MONGO_URI environment variable is not set!", file=sys.stderr)
+    print("Please set the MONGO_URI environment variable to your MongoDB connection string.", file=sys.stderr)
+    print("Example: mongodb://username:password@host:port/dbname", file=sys.stderr)
+
+app.config['MONGO_URI'] = mongo_uri
 mongo = PyMongo(app)
+
+# Verify MongoDB connection
+try:
+    # Force a command to check the connection
+    mongo.db.command('ping')
+    print("MongoDB connection successful")
+except Exception as e:
+    print(f"ERROR connecting to MongoDB: {e}", file=sys.stderr)
+    print("Please check your MONGO_URI and ensure your MongoDB server is running.", file=sys.stderr)
 
 # Login manager setup
 login_manager = LoginManager()
@@ -78,10 +94,14 @@ class User(UserMixin):
 
 @login_manager.user_loader
 def load_user(user_id):
-    user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
-    if user_data:
-        return User(user_data)
-    return None
+    try:
+        user_data = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+        if user_data:
+            return User(user_data)
+        return None
+    except Exception as e:
+        print(f"Error loading user: {e}")
+        return None
 
 # Routes
 @app.route('/')
@@ -100,19 +120,23 @@ def login():
         password = request.form.get('password')
         remember = True if request.form.get('remember') else False
         
-        user = mongo.db.users.find_one({'username': username})
-        
-        if user and check_password_hash(user['password'], password):
-            user_obj = User(user)
-            login_user(user_obj, remember=remember)
-            session['dark_mode'] = user.get('dark_mode', False)
+        try:
+            user = mongo.db.users.find_one({'username': username})
             
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
-            return redirect(url_for('dashboard'))
-        else:
-            flash('Invalid username or password', 'danger')
+            if user and check_password_hash(user['password'], password):
+                user_obj = User(user)
+                login_user(user_obj, remember=remember)
+                session['dark_mode'] = user.get('dark_mode', False)
+                
+                next_page = request.args.get('next')
+                if next_page:
+                    return redirect(next_page)
+                return redirect(url_for('dashboard'))
+            else:
+                flash('Invalid username or password', 'danger')
+        except Exception as e:
+            print(f"Database error during login: {e}")
+            flash('Database connection error. Please try again later.', 'danger')
     
     return render_template('login.html')
 
@@ -547,6 +571,7 @@ def start_bot(bot_config, user):
     
     # Start bot in a separate thread
     def run_bot():
+        # Create a new event loop for this thread
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         
@@ -602,6 +627,9 @@ def start_bot(bot_config, user):
                 # Remove from active bots
                 del active_bots[bot_id]
             
+            # Close the loop properly
+            if hasattr(loop, 'shutdown_asyncgens'):
+                loop.run_until_complete(loop.shutdown_asyncgens())
             loop.close()
     
     # Store bot instance and start thread
@@ -628,6 +656,7 @@ def stop_bot(bot_id):
     
     # Run stop method in a new thread
     def stop_thread():
+        # Create new event loop for this thread
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         try:
@@ -635,6 +664,9 @@ def stop_bot(bot_id):
         except Exception as e:
             print(f"Error stopping bot: {e}")
         finally:
+            # Proper cleanup of the event loop
+            if hasattr(loop, 'shutdown_asyncgens'):
+                loop.run_until_complete(loop.shutdown_asyncgens())
             loop.close()
     
     # Start stop thread
@@ -656,6 +688,23 @@ def stop_bot(bot_id):
 def inject_theme():
     dark_mode = session.get('dark_mode', False)
     return {'dark_mode': dark_mode}
+
+# MongoDB connection status endpoint for troubleshooting
+@app.route('/mongo-status')
+def mongo_status():
+    try:
+        # Check MongoDB connection
+        mongo.db.command('ping')
+        return jsonify({"status": "connected", "database": mongo.db.name})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+@app.route('/bot/start')
+@login_required
+def redirect_to_dashboard():
+    """Redirect from the invalid /bot/start route to the dashboard"""
+    flash('Please select a bot from the dashboard to start it', 'info')
+    return redirect(url_for('dashboard'))
 
 if __name__ == '__main__':
     app.run(debug=True)

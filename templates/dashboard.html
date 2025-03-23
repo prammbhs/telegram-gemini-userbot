@@ -35,16 +35,16 @@
                         </div>
                         
                         <div class="d-flex justify-content-between">
-                            <a href="{{ url_for('view_bot', bot_id=bot.id) }}" class="btn btn-sm btn-outline-primary">
+                            <a href="{{ url_for('view_bot', bot_id=bot._id) }}" class="btn btn-sm btn-outline-primary">
                                 <i class="bi bi-eye"></i> View
                             </a>
                             
                             {% if bot.is_active %}
-                            <a href="{{ url_for('stop_bot_route', bot_id=bot.id) }}" class="btn btn-sm btn-danger">
+                            <a href="{{ url_for('stop_bot_route', bot_id=bot._id) }}" class="btn btn-sm btn-danger">
                                 <i class="bi bi-stop-circle"></i> Stop
                             </a>
                             {% else %}
-                            <a href="{{ url_for('start_bot_route', bot_id=bot.id) }}" class="btn btn-sm btn-success">
+                            <a href="{{ url_for('start_bot_route', bot_id=bot._id) }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-play-circle"></i> Start
                             </a>
                             {% endif %}

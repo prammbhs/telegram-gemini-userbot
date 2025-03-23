@@ -4,6 +4,7 @@ import json
 from telegram_client import TelegramUserbot
 from ai_handler import GeminiAI
 import time
+import config
 
 class GeminiUserbot:
     def __init__(self, super_context, target_group, duration=30, user_id=None):
@@ -12,7 +13,7 @@ class GeminiUserbot:
         self.duration = duration
         self.user_id = user_id
         
-        # Pass user_id to telegram client for proper session management
+        # Initialize the telegram client (won't create TelegramClient yet)
         self.telegram_client = TelegramUserbot(super_context, target_group, duration, user_id)
         
         # Get dynamic config for this user

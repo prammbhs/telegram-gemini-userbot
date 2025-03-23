@@ -1,7 +1,7 @@
 import asyncio
 import random
 import time
-from telethon import TelegramClient, events
+# Defer TelegramClient import until we need it
 from telethon.tl.functions.messages import GetHistoryRequest
 from telethon.tl.types import Channel, User, Chat
 import config
@@ -9,21 +9,18 @@ import config
 class TelegramUserbot:
     def __init__(self, super_context, target_group, duration, user_id=None):
         # Get dynamic config for this user
-        config_instance = config.DynamicConfig(user_id)
+        self.config_instance = config.DynamicConfig(user_id)
         
-        self.client = TelegramClient(
-            config_instance.SESSION_FILE, 
-            config_instance.API_ID, 
-            config_instance.API_HASH
-        )
-        
+        # Store parameters but don't create client yet - we'll do this in start()
         self.super_context = super_context
         self.target_group = target_group
         self.duration = duration * 60  # Convert to seconds
+        self.user_id = user_id
         self.start_time = None
         self.running = False
         self.session_start_timestamp = None
         self.is_group_chat = None  # Will be set during connection
+        self.client = None  # We'll initialize this in the start method
         
     async def _check_chat_type(self):
         """Determine if we're in a group chat or individual conversation"""
@@ -148,6 +145,16 @@ class TelegramUserbot:
     
     async def start(self):
         """Start the userbot"""
+        # Import TelegramClient here to avoid premature event loop access
+        from telethon import TelegramClient, events
+        
+        # Initialize the TelegramClient here instead of in __init__
+        self.client = TelegramClient(
+            self.config_instance.SESSION_FILE, 
+            self.config_instance.API_ID, 
+            self.config_instance.API_HASH
+        )
+        
         await self.client.start()
         print("Client Created")
         
@@ -210,9 +217,11 @@ class TelegramUserbot:
         """Stop the userbot safely with error handling"""
         self.running = False
         try:
-            await self.client.disconnect()
-            print("Bot disconnected")
+            if self.client and self.client.is_connected():
+                await self.client.disconnect()
+                print("Bot disconnected")
         except Exception as e:
             print(f"Error disconnecting client: {e}")
         finally:
             print("Bot stopped")
+            self.client = None  # Reset client to None

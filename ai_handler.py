@@ -11,11 +11,22 @@ from document_handler import DocumentHandler
 import glob
 import pickle
 from collections import defaultdict, Counter
+try:
+    from db_handler import MongoDBHandler
+    DB_HANDLER_AVAILABLE = True
+except ImportError:
+    DB_HANDLER_AVAILABLE = False
 
 class GeminiAI:
-    def __init__(self, super_context):
+    def __init__(self, super_context, api_key=None):
         self.super_context = super_context
-        genai.configure(api_key=config.GEMINI_API_KEY)
+        
+        # Use provided API key if available, otherwise fall back to config
+        if api_key:
+            genai.configure(api_key=api_key)
+        else:
+            genai.configure(api_key=config.GEMINI_API_KEY)
+            
         self.model = genai.GenerativeModel('gemini-1.5-flash')
         
         # Extract name and role from super_context
@@ -992,19 +1003,27 @@ class LearningManager:
             "emoji_patterns": defaultdict(Counter)  # Which emojis work well in which contexts
         }
         
-        # Create DB handler for MongoDB storage
-        self.db_handler = MongoDBHandler()
-        
         # Create logs directory for local development
-        if not os.environ.get('MONGODB_URI'):
-            if not os.path.exists(log_dir):
-                os.makedirs(log_dir)
-            # Path to store learned patterns locally
-            self.learning_file = os.path.join(log_dir, "learned_patterns.pkl")
-            self._load_learned_patterns_local()
+        if not os.path.exists(log_dir):
+            os.makedirs(log_dir)
+            
+        # Path to store learned patterns locally
+        self.learning_file = os.path.join(log_dir, "learned_patterns.pkl")
+        
+        # Setup database handler if available
+        self.db_handler = None
+        if DB_HANDLER_AVAILABLE and os.environ.get('MONGO_URI'):
+            try:
+                self.db_handler = MongoDBHandler()
+                # Load from MongoDB
+                self._load_learned_patterns_db()
+            except Exception as e:
+                print(f"Error connecting to MongoDB: {e}")
+                # Fallback to local storage
+                self._load_learned_patterns_local()
         else:
-            # Load from MongoDB
-            self._load_learned_patterns_db()
+            # No MongoDB available, use local storage
+            self._load_learned_patterns_local()
     
     def _load_learned_patterns_local(self):
         """Load previously learned patterns from local file"""
@@ -1019,6 +1038,9 @@ class LearningManager:
     def _load_learned_patterns_db(self):
         """Load previously learned patterns from MongoDB"""
         try:
+            if not self.db_handler:
+                return
+                
             patterns = self.db_handler.load_learned_patterns()
             if patterns:
                 # Convert back to defaultdict and Counter
@@ -1036,7 +1058,7 @@ class LearningManager:
                     self.learned_patterns['emoji_patterns'] = emoji_pats
                 if 'question_answers' in patterns:
                     self.learned_patterns['question_answers'] = patterns['question_answers']
-                if 'common_transitions' in patterns:
+                if 'common_transitions' in patterns:  # Fixed: removed the extra single quote
                     self.learned_patterns['common_transitions'] = defaultdict(list, patterns['common_transitions'])
                     
                 print(f"Loaded learned patterns from DB with {len(self.learned_patterns['topic_responses'])} topics")
@@ -1045,25 +1067,25 @@ class LearningManager:
     
     def save_learned_patterns(self):
         """Save learned patterns for future use"""
-        if os.environ.get('MONGODB_URI'):
-            # Save to MongoDB
+        # Try MongoDB first if available
+        if self.db_handler:
             try:
-                self.db_handler.save_learned_patterns(self.learned_patterns)
-                print(f"Saved learned patterns to MongoDB with {len(self.learned_patterns['topic_responses'])} topics")
-                return True
+                success = self.db_handler.save_learned_patterns(self.learned_patterns)
+                if success:
+                    print(f"Saved learned patterns to MongoDB with {len(self.learned_patterns['topic_responses'])} topics")
+                    return True
             except Exception as e:
-                print(f"Error saving learned patterns to MongoDB: {e}")
-                return False
-        else:
-            # Save locally for development
-            try:
-                with open(self.learning_file, 'wb') as f:
-                    pickle.dump(self.learned_patterns, f)
-                print(f"Saved learned patterns locally with {len(self.learned_patterns['topic_responses'])} topics")
-                return True
-            except Exception as e:
-                print(f"Error saving learned patterns locally: {e}")
-                return False
+                print(f"Error saving to MongoDB, falling back to local storage: {e}")
+                
+        # Fallback to local storage
+        try:
+            with open(self.learning_file, 'wb') as f:
+                pickle.dump(self.learned_patterns, f)
+            print(f"Saved learned patterns locally with {len(self.learned_patterns['topic_responses'])} topics")
+            return True
+        except Exception as e:
+            print(f"Error saving learned patterns locally: {e}")
+            return False
     
     def learn_from_session(self, session_log):
         """Extract patterns from a completed session"""

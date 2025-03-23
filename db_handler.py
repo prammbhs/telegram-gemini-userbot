@@ -1,21 +1,25 @@
 import os
 from pymongo import MongoClient
 from datetime import datetime
-import json
 
 class MongoDBHandler:
     def __init__(self):
         # Connect to MongoDB Atlas
-        mongodb_uri = os.environ.get('MONGODB_URI')
-        self.client = MongoClient(mongodb_uri)
-        self.db = self.client['chatbot_db']
+        mongodb_uri = os.environ.get('MONGO_URI')  # Changed from 'MONGODB_URI' to 'MONGO_URI'
+        self.client = MongoClient(mongodb_uri) if mongodb_uri else None
         
-        # Collections
-        self.logs_collection = self.db['session_logs']
-        self.learning_collection = self.db['learned_patterns']
+        if self.client:
+            self.db = self.client.get_database()
+            
+            # Collections
+            self.logs_collection = self.db['session_logs']
+            self.learning_collection = self.db['learned_patterns']
     
     def save_session_log(self, log_data):
         """Save a session log to MongoDB"""
+        if not self.client:
+            return None
+            
         # Add timestamps
         log_data['saved_at'] = datetime.now()
         
@@ -25,29 +29,45 @@ class MongoDBHandler:
     
     def get_all_logs(self):
         """Get all session logs from MongoDB"""
-        return list(self.logs_collection.find({}, {'_id': 0}))
+        if not self.client:
+            return []
+            
+        return list(self.logs_collection.find())
     
     def save_learned_patterns(self, patterns):
         """Save learned patterns to MongoDB"""
-        # Convert defaultdict to regular dict for MongoDB storage
+        if not self.client:
+            return False
+            
+        # Convert defaultdict and Counter to regular dicts for MongoDB
         serializable_patterns = {}
+        
         for key, value in patterns.items():
-            if hasattr(value, 'items'):  # If it's a dict-like object
+            if key == 'topic_responses' or key == 'common_transitions':
+                # These are defaultdict(list)
                 serializable_patterns[key] = dict(value)
+            elif key == 'user_preferences' or key == 'emoji_patterns':
+                # These are defaultdict(Counter)
+                serializable_patterns[key] = {
+                    k: dict(v) for k, v in value.items()
+                }
             else:
+                # Regular dicts
                 serializable_patterns[key] = value
         
-        # Update the single document that stores patterns
-        self.learning_collection.update_one(
-            {'type': 'learning_patterns'},
-            {'$set': {'patterns': serializable_patterns, 'updated_at': datetime.now()}},
+        # Update or insert
+        self.learning_collection.replace_one(
+            {'type': 'learned_patterns'},
+            {'type': 'learned_patterns', 'data': serializable_patterns, 'updated_at': datetime.now()},
             upsert=True
         )
+        
         return True
     
     def load_learned_patterns(self):
         """Load learned patterns from MongoDB"""
-        result = self.learning_collection.find_one({'type': 'learning_patterns'})
-        if result and 'patterns' in result:
-            return result['patterns']
-        return {}
+        if not self.client:
+            return None
+            
+        result = self.learning_collection.find_one({'type': 'learned_patterns'})
+        return result['data'] if result and 'data' in result else None
