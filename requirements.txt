@@ -1,7 +1,7 @@
 # Core dependencies
-telethon==1.28.5
-google-generativeai==0.3.1
-python-dotenv==1.0.0
+telethon==1.24.0
+google-generativeai==0.1.0
+python-dotenv==0.19.0
 
 # GUI dependencies (for desktop app)
 customtkinter==5.2.1
@@ -11,9 +11,9 @@ pillow==10.0.0
 flask==2.0.1
 flask-login==0.5.0
 flask-pymongo==2.3.0
-pymongo[srv]==4.5.0
+pymongo[srv]==4.1.1
 dnspython==2.4.2
-authlib==1.2.1
+authlib==1.0.1
 werkzeug==2.0.1
 gunicorn==20.1.0
 # bson==0.5.10  # Removed - conflicts with pymongo's bson module
@@ -24,10 +24,13 @@ jinja2==3.0.1
 PyPDF2==3.0.1
 python-docx==1.1.2
 beautifulsoup4==4.12.2
-requests==2.31.0
+requests==2.26.0
 
 # Async support
 asyncio==3.4.3
 
 # Deployment
 waitress==2.1.2
+
+# Additional dependencies
+python-telegram-bot==13.7

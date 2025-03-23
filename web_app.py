@@ -294,58 +294,97 @@ def logout():
     logout_user()
     return redirect(url_for('index'))
 
-@app.route('/dashboard')
-@login_required
-def dashboard():
-    # Get user's bots
-    bots = list(mongo.db.bots.find({'user_id': current_user.id}))
+# Helper functions for dashboard
+def get_user_bots(user_id):
+    """Get all bots for a user with additional status information"""
+    bots_cursor = mongo.db.bots.find({'user_id': user_id})
+    bots = []
     
-    # Add is_active flag to each bot
-    for bot in bots:
-        bot_id = str(bot['_id'])
-        bot['is_active'] = bot_id in active_bots
+    for bot in bots_cursor:
+        # Convert ObjectId to string for serialization
+        bot['_id'] = str(bot['_id'])
+        
+        # Add active status
+        bot['status'] = 'active' if bot['_id'] in active_bots else 'inactive'
+        
+        # Get response count from logs
+        response_count = mongo.db.logs.count_documents({
+            'bot_id': bot['_id'],
+            'type': 'info',
+            'message': {'$regex': 'response', '$options': 'i'}
+        })
+        
+        # Add response count to bot object
+        bot['responses'] = response_count
+        
+        # Add formatted dates
+        if 'date_created' in bot:
+            bot['created_at'] = bot['date_created'].strftime('%Y-%m-%d')
+        
+        bots.append(bot)
     
-    # Check if free tier is about to expire
-    free_tier_warning = None
-    if config.FREE_TIER_ENABLED:
-        config_path = os.path.join(config.USER_CONFIGS_DIR, f"{current_user.id}.json")
+    # Sort by creation date (newest first)
+    bots.sort(key=lambda x: x.get('date_created', datetime.min), reverse=True)
+    
+    return bots
+
+def get_free_tier_warning(user_id):
+    """Check if the user should see a free tier warning"""
+    # Create a default structure with all required fields as None
+    warning = {
+        'show': False,
+        'used': 0,
+        'limit': 0,
+        'remaining': 0,
+        'percentage': 0,
+        'percent_used': 0
+    }
+    
+    # Check if user has set custom API key
+    user = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    
+    if not user or not user.get('gemini_api_key'):
+        # Check usage from config
+        config_path = os.path.join(config.USER_CONFIGS_DIR, f"{user_id}.json")
         if os.path.exists(config_path):
             try:
                 with open(config_path, 'r') as f:
                     user_config = json.load(f)
                 
-                # Only show warning if user doesn't have their own API key
-                has_own_key = (
-                    current_user.gemini_api_key and 
-                    current_user.gemini_api_key != config.FREE_TIER_API_KEY
-                )
+                usage = user_config.get('FREE_TIER_USAGE', {})
+                total_requests = usage.get('total_requests', 0)
                 
-                if not has_own_key:
-                    usage = user_config.get('FREE_TIER_USAGE', {})
-                    if usage:
-                        # Calculate remaining requests and days
-                        remaining_requests = max(0, config.FREE_TIER_MAX_REQUESTS - usage.get('total_requests', 0))
-                        
-                        # Calculate days remaining
-                        start_date = usage.get('start_date')
-                        if start_date:
-                            start = datetime.fromisoformat(start_date)
-                            days_elapsed = (datetime.now() - start).days
-                            days_remaining = max(0, config.FREE_TIER_MAX_DAYS - days_elapsed)
-                        else:
-                            days_remaining = config.FREE_TIER_MAX_DAYS
-                        
-                        # Show warning if less than 20% of free tier remains
-                        if (remaining_requests < config.FREE_TIER_MAX_REQUESTS * 0.2 or 
-                            days_remaining < config.FREE_TIER_MAX_DAYS * 0.2):
-                            free_tier_warning = {
-                                'remaining_requests': remaining_requests,
-                                'days_remaining': days_remaining
-                            }
+                # Show warning if usage is over 80% of limit
+                if total_requests > 0 and hasattr(config, 'FREE_TIER_MAX_REQUESTS'):
+                    # Calculate remaining requests
+                    remaining = max(0, config.FREE_TIER_MAX_REQUESTS - total_requests)
+                    percentage = (total_requests / config.FREE_TIER_MAX_REQUESTS) * 100 if config.FREE_TIER_MAX_REQUESTS > 0 else 0
+                    
+                    warning.update({
+                        'show': percentage > 80,
+                        'used': total_requests,
+                        'limit': config.FREE_TIER_MAX_REQUESTS,
+                        'remaining': remaining,
+                        'percentage': percentage,
+                        'percent_used': round(percentage)
+                    })
             except Exception as e:
-                print(f"Error checking free tier status: {e}")
+                print(f"Error checking free tier usage: {e}")
     
-    return render_template('dashboard.html', bots=bots, free_tier_warning=free_tier_warning)
+    return warning
+
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    """Render the dashboard page"""
+    # Fetch bots and free tier warning
+    bots = get_user_bots(current_user.id)
+    free_tier_warning = get_free_tier_warning(current_user.id)
+
+    # Calculate total_responses
+    total_responses = sum(bot['responses'] for bot in bots) if bots else 0
+
+    return render_template('dashboard.html', bots=bots, free_tier_warning=free_tier_warning, total_responses=total_responses)
 
 @app.route('/profile', methods=['GET', 'POST'])
 @login_required
@@ -551,6 +590,23 @@ def start_bot_route(bot_id):
         flash('You need to verify your Telegram account before starting a bot', 'warning')
         return redirect(url_for('verify_telegram'))
     
+    # Check Telegram connection before trying to start
+    from telegram_connection_checker import TelegramConnectionChecker
+    is_reachable, server, message = TelegramConnectionChecker.check_telegram_connection()
+    
+    if not is_reachable:
+        flash('Cannot connect to Telegram servers. Please check your internet connection and try again.', 'danger')
+        # Log the connectivity issue
+        log_entry = {
+            'bot_id': bot_id,
+            'user_id': current_user.id,
+            'type': 'error',
+            'timestamp': datetime.now(),
+            'message': f"Failed to connect to Telegram servers: {message}"
+        }
+        mongo.db.logs.insert_one(log_entry)
+        return redirect(url_for('check_telegram_connection'))
+    
     # Create a serializable user object that won't become invalid in threads
     serializable_user = SerializableUser(current_user)
     
@@ -695,8 +751,34 @@ def run_bot(loop, bot_config, user):
             # Get bot instance from active_bots
             bot = active_bots[bot_id]['bot']
             
-            # Run the async start method
-            loop.run_until_complete(bot.start())
+            # Run the async start method with connection error handling
+            max_retries = 3
+            retry_count = 0
+            
+            while retry_count < max_retries:
+                try:
+                    loop.run_until_complete(bot.start())
+                    break  # If successful, exit the retry loop
+                except ConnectionError as conn_err:
+                    retry_count += 1
+                    error_msg = f"Connection error (attempt {retry_count}/{max_retries}): {str(conn_err)}"
+                    print(error_msg)
+                    
+                    # Log connection error
+                    conn_log = {
+                        'bot_id': bot_id,
+                        'user_id': user_id,
+                        'type': 'warning',
+                        'timestamp': datetime.now(),
+                        'message': error_msg
+                    }
+                    mongo.db.logs.insert_one(conn_log)
+                    
+                    if retry_count >= max_retries:
+                        raise  # Re-raise if max retries reached
+                    
+                    # Wait before retrying (incremental backoff)
+                    time.sleep(2 * retry_count)
             
             # Add a log message indicating successful initialization
             success_log = {
@@ -707,8 +789,20 @@ def run_bot(loop, bot_config, user):
                 'message': f"Bot initialized and running in group {bot_config['target_group']}"
             }
             mongo.db.logs.insert_one(success_log)
+        except ConnectionError as e:
+            # Handle connection errors specifically
+            error_msg = f"Network connection error: {str(e)}. Please check your internet connection and Telegram service status."
+            log_entry = {
+                'bot_id': bot_id,
+                'user_id': user_id,
+                'type': 'error',
+                'timestamp': datetime.now(),
+                'message': error_msg
+            }
+            mongo.db.logs.insert_one(log_entry)
+            print(f"Bot connection error: {error_msg}")
         except Exception as e:
-            # Log error
+            # Log other errors
             error_msg = str(e)
             log_entry = {
                 'bot_id': bot_id,
@@ -902,6 +996,21 @@ def help_article(article):
 def pricing():
     """Render the pricing page"""
     return render_template("pricing.html")
+
+@app.route("/privacy")
+def privacy():
+    """Render the privacy policy page"""
+    return render_template("privacy.html")
+
+@app.route("/terms")
+def terms():
+    """Render the terms of service page"""
+    return render_template("terms.html")
+
+@app.route("/blog")
+def blog():
+    """Render the blog page"""
+    return render_template("blog.html")
 
 @app.route('/test-api-key', methods=['POST'])
 @login_required
@@ -1262,5 +1371,37 @@ def telegram_verification_code():
     
     return render_template('telegram_verification_code.html')
 
+@app.route('/check-telegram-connection')
+@login_required
+def check_telegram_connection():
+    """Check and diagnose Telegram connection issues"""
+    from telegram_connection_checker import TelegramConnectionChecker
+    
+    # Run the connection check
+    is_reachable, server, message = TelegramConnectionChecker.check_telegram_connection()
+    
+    # If not reachable, run diagnostics
+    if not is_reachable:
+        diagnosis = TelegramConnectionChecker.diagnose_connection_problems()
+        
+        return render_template(
+            'connection_issues.html',
+            is_reachable=is_reachable,
+            server=server,
+            message=message,
+            diagnosis=diagnosis
+        )
+    
+    # If reachable, just display success message
+    flash(f'Telegram connection is working properly via {server}', 'success')
+    return redirect(url_for('profile'))
+
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Enable production mode for deployment
+    debug_mode = os.environ.get('DEBUG', 'False').lower() == 'true'
+    port = int(os.environ.get('PORT', 5000))
+    
+    # Railway uses 0.0.0.0 for binding
+    host = '0.0.0.0'
+    
+    app.run(host=host, port=port, debug=debug_mode)

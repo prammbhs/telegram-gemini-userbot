@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <h1 class="display-4 fw-bold mb-4">Our Blog</h1>
+            <p class="lead mb-0">Latest news, tutorials and updates from the Telegram Gemini Bot team</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Blog posts -->
+            <article class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                    <h2 class="h3 mb-3">Getting Started with Telegram Gemini Bot</h2>
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-calendar me-2"></i>{% now 'local', '%B %d, %Y' %}
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-person me-2"></i>Admin
+                    </p>
+                    <p>
+                        Welcome to Telegram Gemini Bot! This guide will help you set up your first AI-powered Telegram bot in just a few minutes. Learn how to create, configure, and deploy your bot to start engaging with your Telegram community.
+                    </p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+            </article>
+            
+            <article class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                    <h2 class="h3 mb-3">Advanced Bot Configuration Tips</h2>
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-calendar me-2"></i>{% now 'local', '%B %d, %Y' %}
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-person me-2"></i>Admin
+                    </p>
+                    <p>
+                        Take your Telegram bots to the next level with these advanced configuration tips. Learn how to fine-tune your bot's personality, optimize response time, and create more engaging conversational flows using context and learning capabilities.
+                    </p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+            </article>
+            
+            <article class="card border-0 shadow-sm mb-5">
+                <div class="card-body p-4">
+                    <h2 class="h3 mb-3">Announcing New Bot Templates Library</h2>
+                    <p class="text-muted mb-3">
+                        <i class="bi bi-calendar me-2"></i>{% now 'local', '%B %d, %Y' %}
+                        <span class="mx-2">•</span>
+                        <i class="bi bi-person me-2"></i>Admin
+                    </p>
+                    <p>
+                        We're excited to introduce our new Bot Templates Library! Now you can choose from a variety of pre-configured bot personalities and use cases. Whether you need a customer service bot, a trivia bot, or a personal assistant, we've got you covered.
+                    </p>
+                    <a href="#" class="btn btn-sm btn-outline-primary">Read More</a>
+                </div>
+            </article>
+            
+            <!-- Pagination -->
+            <nav aria-label="Blog pagination">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+        
+        <div class="col-lg-4">
+            <!-- Sidebar -->
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Search</h4>
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Search the blog...">
+                        <button class="btn btn-primary" type="button">
+                            <i class="bi bi-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Categories</h4>
+                    <div class="list-group list-group-flush">
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Tutorials
+                            <span class="badge bg-primary rounded-pill">5</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            News
+                            <span class="badge bg-primary rounded-pill">3</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Updates
+                            <span class="badge bg-primary rounded-pill">2</span>
+                        </a>
+                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            Tips & Tricks
+                            <span class="badge bg-primary rounded-pill">4</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="mb-3">Subscribe</h4>
+                    <p>Get the latest news and updates delivered to your inbox.</p>
+                    <form>
+                        <div class="mb-3">
+                            <input type="email" class="form-control" placeholder="Your email address">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

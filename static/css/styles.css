@@ -737,6 +737,47 @@ a:hover {
     margin-bottom: 0.25rem;
 }
 
+/* Achievement badges styling */
+.achievement-badge {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.achievement-badge.earned {
+    background-color: #e8f5e9;
+    border-left: 4px solid #4caf50;
+}
+
+.achievement-badge.locked {
+    background-color: #f5f5f5;
+    border-left: 4px solid #9e9e9e;
+    opacity: 0.7;
+}
+
+.achievement-badge .badge-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 15px;
+    font-size: 1.2rem;
+}
+
+.achievement-badge.earned .badge-icon {
+    background-color: #4caf50;
+    color: white;
+}
+
+.achievement-badge.locked .badge-icon {
+    background-color: #9e9e9e;
+    color: white;
+}
+
 /* SEO and Performance Optimization */
 .lazy-image {
     opacity: 0;

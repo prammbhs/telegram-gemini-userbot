@@ -5,6 +5,13 @@ from telegram_client import TelegramUserbot
 from ai_handler import GeminiAI
 import time
 import config
+import socket
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, 
+                    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+logger = logging.getLogger('GeminiUserbot')
 
 class GeminiUserbot:
     def __init__(self, super_context, target_group, duration=30, user_id=None):
@@ -21,6 +28,13 @@ class GeminiUserbot:
         
         # But prepare the configuration
         self.config_instance = config.DynamicConfig(user_id)
+        
+        # Set up a logger for this instance
+        self.log = logger
+        
+        # Track connection attempts
+        self.connection_attempts = 0
+        self.max_attempts = 5  # Increased from 3 to 5
     
     async def generate_ai_response(self, context, is_group_chat=True, message_id_to_reply=None):
         """Generate response using the AI handler"""
@@ -41,9 +55,60 @@ class GeminiUserbot:
 
         return await self.ai_handler.generate_initial_message(is_group_chat=is_group)
     
+    async def check_connection(self):
+        """Test connection to Telegram servers before starting the bot"""
+        try:
+            # Try different Telegram servers and ports
+            telegram_servers = [
+                ("api.telegram.org", 443),
+                ("149.154.167.50", 443),  # Telegram DC1
+                ("149.154.167.51", 443),  # Telegram DC2
+                ("149.154.175.100", 443), # Telegram DC3
+            ]
+            
+            # Try each server until one responds
+            for server, port in telegram_servers:
+                try:
+                    self.log.info(f"Testing connection to Telegram server {server}:{port}")
+                    sock = socket.create_connection((server, port), timeout=5)
+                    sock.close()
+                    self.log.info(f"Successfully connected to {server}:{port}")
+                    return True
+                except (socket.timeout, socket.gaierror, ConnectionError) as e:
+                    self.log.warning(f"Failed to connect to {server}:{port}: {str(e)}")
+                    continue
+                    
+            return False
+        except Exception as e:
+            self.log.error(f"Error in connection check: {str(e)}")
+            return False
+    
     async def start(self):
-        """Start the userbot"""
-        # Flag that we're running
+        """Start the userbot with connection checking"""
+        # Check for internet and Telegram server connection
+        connection_attempts = 0
+        max_attempts = self.max_attempts
+        
+        self.log.info("Starting Telegram Gemini Userbot...")
+        
+        # Check internet connectivity
+        while connection_attempts < max_attempts:
+            self.log.info(f"Checking Telegram connection (attempt {connection_attempts+1}/{max_attempts})...")
+            if await self.check_connection():
+                self.log.info("Connection to Telegram servers confirmed.")
+                break
+                
+            connection_attempts += 1
+            if connection_attempts >= max_attempts:
+                error_msg = "Cannot connect to Telegram servers after multiple attempts. Please check your internet connection and try again later."
+                self.log.error(error_msg)
+                raise ConnectionError(error_msg)
+            
+            # Wait with exponential backoff before retrying
+            retry_delay = min(30, 2 ** connection_attempts)  # Cap at 30 seconds
+            self.log.info(f"Connection failed. Retrying in {retry_delay} seconds...")
+            await asyncio.sleep(retry_delay)
+        
         self._is_running = True
         
         try:
@@ -79,28 +144,66 @@ class GeminiUserbot:
                 parent_bot=self  # Pass reference to self so client can access AI handler
             )
             
-            # 3. Start Telegram client
-            await self.telegram_client.start()
+            # 3. Start Telegram client with better error handling specifically for CancelledError
+            max_client_retries = 3
+            for attempt in range(1, max_client_retries + 1):
+                try:
+                    self.log.info(f"Starting Telegram client (attempt {attempt}/{max_client_retries})...")
+                    
+                    # Handle CancelledError specifically - it often indicates a network timeout
+                    # Wrap the start call with a timeout to prevent hanging connections
+                    try:
+                        # Set a timeout for the connection attempt to prevent hanging
+                        await asyncio.wait_for(self.telegram_client.start(), timeout=30)
+                        self.log.info("Telegram client started successfully")
+                        break
+                    except asyncio.TimeoutError:
+                        self.log.error("Telegram connection timed out")
+                        if attempt >= max_client_retries:
+                            raise ConnectionError("Failed to connect to Telegram after multiple attempts - connection timed out")
+                    except asyncio.CancelledError:
+                        self.log.error("Telegram connection was cancelled - this usually indicates a network issue")
+                        if attempt >= max_client_retries:
+                            raise ConnectionError("Connection to Telegram servers was repeatedly cancelled - please check your internet connection")
+                        
+                    # Exponential backoff between retries
+                    retry_wait = attempt * 4  # More aggressive waiting
+                    self.log.info(f"Retrying in {retry_wait} seconds...")
+                    await asyncio.sleep(retry_wait)
+                except Exception as e:
+                    self.log.error(f"Error starting Telegram client: {str(e)}")
+                    if attempt >= max_client_retries:
+                        raise
+                    # Exponential backoff between retries
+                    retry_wait = attempt * 4
+                    self.log.info(f"Retrying in {retry_wait} seconds...")
+                    await asyncio.sleep(retry_wait)
             
         except Exception as e:
             self._is_running = False
-            print(f"Error starting GeminiUserbot: {e}")
+            self.log.error(f"Error starting GeminiUserbot: {str(e)}")
             raise
     
     async def stop(self):
         """Stop the userbot"""
+        self.log.info("Stopping Telegram Gemini Userbot...")
         self._is_running = False
         
         # Stop the Telegram client
         if self.telegram_client:
-            await self.telegram_client.stop()
+            try:
+                await self.telegram_client.stop()
+                self.log.info("Telegram client stopped successfully")
+            except Exception as e:
+                self.log.error(f"Error stopping Telegram client: {str(e)}")
         
         # Save AI session logs if enabled
         if self.ai_handler and self.learning_enabled:
             try:
                 self.ai_handler.save_session_log()
+                self.log.info("AI session logs saved successfully")
             except Exception as e:
-                print(f"Error saving AI session log: {e}")
+                self.log.error(f"Error saving AI session log: {str(e)}")
     
     async def add_resource(self, resource_path, description=None):
         """Add a resource for the AI handler to use"""

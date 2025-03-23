@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-lg-12">
+            <h1>Privacy Policy</h1>
+            <p class="text-muted">Last updated: {% now 'local', '%B %d, %Y' %}</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h4 mb-3">Introduction</h2>
+                    <p>
+                        We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you use our service and tell you about your privacy rights.
+                    </p>
+                    
+                    <h2 class="h4 mb-3 mt-4">Data We Collect</h2>
+                    <p>
+                        We collect and process the following information:
+                    </p>
+                    <ul>
+                        <li>Account information (username, email)</li>
+                        <li>Telegram information used for authentication</li>
+                        <li>Bot configurations and conversation logs</li>
+                        <li>API keys that you provide</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">How We Use Your Data</h2>
+                    <p>
+                        We use your data to:
+                    </p>
+                    <ul>
+                        <li>Provide and maintain our service</li>
+                        <li>Authenticate with the Telegram API</li>
+                        <li>Process API requests to Google Gemini</li>
+                        <li>Improve our service and user experience</li>
+                    </ul>
+                    
+                    <h2 class="h4 mb-3 mt-4">Data Security</h2>
+                    <p>
+                        We implement appropriate security measures to protect your personal data against unauthorized access, alteration, disclosure, or destruction.
+                    </p>
+                    
+                    <h2 class="h4 mb-3 mt-4">Third-Party Services</h2>
+                    <p>
+                        Our service uses:
+                    </p>
+                    <ul>
+                        <li>Telegram API</li>
+                        <li>Google Gemini API</li>
+                        <li>Authentication providers (if you use OAuth)</li>
+                    </ul>
+                    <p>
+                        Each of these services has their own privacy policies that you should review.
+                    </p>
+                    
+                    <h2 class="h4 mb-3 mt-4">Contact Us</h2>
+                    <p>
+                        If you have any questions about this privacy policy, please contact us at:
+                    </p>
+                    <p>
+                        <a href="mailto:support@example.com">support@example.com</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

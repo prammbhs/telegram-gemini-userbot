@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Connection Issues - Telegram Gemini Bot{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-4">
+        <div class="col-lg-12">
+            <h1 class="h2">Telegram Connection Issues</h1>
+            <p class="text-muted">We're having trouble connecting to Telegram's servers</p>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-danger text-white">
+                    <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Windows-Specific Network Error Detected</h5>
+                </div>
+                <div class="card-body p-4">
+                    <p class="mb-3">Your system is experiencing the <code>WinError 64</code> issue that affects Windows connections to Telegram. This is typically caused by Windows Firewall, antivirus software, or network configuration issues.</p>
+                    
+                    <div class="alert alert-warning">
+                        <h6 class="mb-2">Diagnosis:</h6>
+                        <ul class="mb-0">
+                            {% if diagnosis.internet_connected %}
+                                <li>Your internet connection appears to be working</li>
+                            {% else %}
+                                <li class="text-danger">Your internet connection appears to be down</li>
+                            {% endif %}
+                            
+                            {% if diagnosis.telegram_api_reachable %}
+                                <li>Telegram API is reachable</li>
+                            {% else %}
+                                <li class="text-danger">Cannot reach Telegram API (api.telegram.org)</li>
+                            {% endif %}
+                            
+                            {% if diagnosis.telegram_dc_reachable %}
+                                <li>At least one Telegram data center is reachable</li>
+                            {% else %}
+                                <li class="text-danger">Cannot reach any Telegram data centers</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    
+                    <h5 class="mt-4">Solutions for WinError 64:</h5>
+                    <ol>
+                        <li>
+                            <strong>Temporarily disable your firewall or antivirus</strong>
+                            <p class="text-muted">Many antivirus programs like Avast, McAfee, and even Windows Defender can block Telegram connections. Try temporarily disabling them to test.</p>
+                        </li>
+                        <li>
+                            <strong>Add Python to your firewall exceptions</strong>
+                            <p class="text-muted">
+                                Run our diagnostic tool (<code>windows_network_helper.py</code>) as administrator to automatically add Python to your firewall exceptions.
+                                <a href="{{ url_for('static', filename='windows_network_helper.exe') }}" class="btn btn-sm btn-outline-primary">Download Helper Tool</a>
+                            </p>
+                        </li>
+                        <li>
+                            <strong>Try a different network connection</strong>
+                            <p class="text-muted">Switch to a mobile hotspot or different WiFi network to test if your current network is blocking Telegram.</p>
+                        </li>
+                        <li>
+                            <strong>Use a VPN service</strong>
+                            <p class="text-muted">Some Internet Service Providers (ISPs) block or throttle Telegram connections. A VPN can help bypass these restrictions.</p>
+                        </li>
+                    </ol>
+                    
+                    <div class="mt-4">
+                        <h6>Error Details:</h6>
+                        <div class="bg-light p-3 rounded">
+                            <code>WinError 64: The specified network name is no longer available</code>
+                            <hr>
+                            <p class="text-muted mb-0">This error occurs when Windows cannot maintain a stable connection to Telegram servers, typically due to a firewall, antivirus, or network restriction.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <h6>Why Does This Happen?</h6>
+                        <p class="mb-0">Windows Firewall and many antivirus programs implement stricter TCP/IP connection rules than other operating systems. Telegram uses specific MTProto protocols that can trigger these security measures, especially when making multiple rapid connections to Telegram's servers.</p>
+                    </div>
+                </div>
+                <div class="card-footer bg-light d-flex justify-content-between">
+                    <a href="{{ url_for('check_telegram_connection') }}" class="btn btn-primary">
+                        <i class="bi bi-arrow-repeat me-2"></i>Recheck Connection
+                    </a>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                        Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
