@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Analytics - {{ bot.name }}{% endblock %}
+
+{% block head %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-primary text-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Analytics: {{ bot.name }}</h4>
+                    <a href="{{ url_for('view_bot', bot_id=bot._id) }}" class="btn btn-sm btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> Back to Bot
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if analytics and analytics.total_responses > 0 %}
+<div class="row mb-4">
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center">
+                <h1 class="display-4 text-primary">{{ analytics.total_responses }}</h1>
+                <p class="text-muted mb-0">Total Responses</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center">
+                <h1 class="display-4 text-primary">{{ analytics.session_duration_minutes|round|int }}</h1>
+                <p class="text-muted mb-0">Minutes Active</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center">
+                <h1 class="display-4 text-primary">{{ analytics.unique_users_engaged }}</h1>
+                <p class="text-muted mb-0">Users Engaged</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body text-center">
+                <h1 class="display-4 text-primary">{{ analytics.average_words_per_response|round|int }}</h1>
+                <p class="text-muted mb-0">Avg Words/Response</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-7 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Response Types</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="responseTypesChart" height="250"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-header">
+                <h5 class="mb-0">Top Topics</h5>
+            </div>
+            <div class="card-body">
+                {% if analytics.top_topics and analytics.top_topics|length > 0 %}
+                <ul class="list-group list-group-flush">
+                    {% for topic, count in analytics.top_topics %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span class="text-truncate" style="max-width: 80%;">{{ topic }}</span>
+                        <span class="badge bg-primary rounded-pill">{{ count }}</span>
+                    </li>
+                    {% endfor %}
+                </ul>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <p>No topic data available</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header">
+                <h5 class="mb-0">Emoji Usage</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="d-flex justify-content-center align-items-center h-100" style="min-height: 200px;">
+                    <div>
+                        <div class="circle-progress" id="emojiProgress">
+                            <div class="progress-text">{{ analytics.emoji_usage_percentage }}%</div>
+                        </div>
+                        <p class="text-muted mt-3">of responses contained emojis</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm border-0">
+            <div class="card-header">
+                <h5 class="mb-0">Users Engaged</h5>
+            </div>
+            <div class="card-body">
+                {% if analytics.users and analytics.users|length > 0 %}
+                <div class="row">
+                    {% for user in analytics.users %}
+                    <div class="col-6 mb-2">
+                        <div class="d-flex align-items-center">
+                            <div class="user-icon bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" 
+                                 style="width: 35px; height: 35px; margin-right: 10px;">
+                                <span>{{ user[0]|upper }}</span>
+                            </div>
+                            <span class="text-truncate">{{ user }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center text-muted py-5">
+                    <p>No user data available</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center py-5">
+                <i class="bi bi-bar-chart-line display-4 text-muted"></i>
+                <h4 class="mt-3 mb-3">No Analytics Data Available</h4>
+                <p class="text-muted">Analytics will be available after your bot has been active and generated responses.</p>
+                <a href="{{ url_for('view_bot', bot_id=bot._id) }}" class="btn btn-primary mt-3">
+                    <i class="bi bi-play-circle me-2"></i>Start Your Bot
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if analytics and analytics.total_responses > 0 %}
+<script>
+    // Response Types Chart
+    const responseTypesCtx = document.getElementById('responseTypesChart').getContext('2d');
+    
+    // Extract data from analytics
+    const responseTypes = {{ analytics.response_types | tojson }};
+    const labels = [];
+    const data = [];
+    
+    for (const type in responseTypes) {
+        // Format the label for better readability
+        const formattedLabel = type
+            .replace(/_/g, ' ')
+            .replace(/\b\w/g, c => c.toUpperCase());
+            
+        labels.push(formattedLabel);
+        data.push(responseTypes[type]);
+    }
+    
+    // Define colors for the chart
+    const colors = [
+        'rgba(54, 162, 235, 0.7)',
+        'rgba(255, 99, 132, 0.7)',
+        'rgba(75, 192, 192, 0.7)',
+        'rgba(255, 206, 86, 0.7)',
+        'rgba(153, 102, 255, 0.7)',
+        'rgba(255, 159, 64, 0.7)',
+        'rgba(199, 199, 199, 0.7)'
+    ];
+    
+    new Chart(responseTypesCtx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Count',
+                data: data,
+                backgroundColor: colors,
+                borderColor: colors.map(color => color.replace('0.7', '1')),
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        precision: 0
+                    }
+                }
+            }
+        }
+    });
+    
+    // Emoji usage circle progress
+    const emojiProgress = document.getElementById('emojiProgress');
+    const percentage = {{ analytics.emoji_usage_percentage }};
+    
+    // Set the progress circle style based on percentage
+    emojiProgress.style.background = `conic-gradient(var(--bs-primary) ${percentage * 3.6}deg, #f0f0f0 0deg)`;
+</script>
+{% endif %}
+{% endblock %}

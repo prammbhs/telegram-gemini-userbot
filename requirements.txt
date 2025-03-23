@@ -1,11 +1,22 @@
 # Core dependencies
-telethon==1.31.0
-google-generativeai==0.3.2
+telethon==1.28.5
+google-generativeai==0.3.1
 python-dotenv==1.0.0
 
 # GUI dependencies
 customtkinter==5.2.1
-pillow==10.2.0
+pillow==10.0.0
 
 # Additional utilities
 asyncio==3.4.3
+flask==2.0.1
+flask-sqlalchemy==2.5.1
+flask-login==0.5.0
+werkzeug==2.0.1
+gunicorn==20.1.0
+PyPDF2==3.0.1
+python-docx==0.8.11
+beautifulsoup4==4.12.2
+requests==2.31.0
+pymongo==4.5.0
+dnspython==2.4.2
