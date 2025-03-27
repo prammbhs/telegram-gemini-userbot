@@ -26,7 +26,7 @@ A web application that allows users to create and manage AI-powered bots that ru
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/telegram-gemini-bot.git
+   git clone https://github.com/prammbhs/telegram-gemini-userbot.git
    cd telegram-gemini-bot
    ```
 
